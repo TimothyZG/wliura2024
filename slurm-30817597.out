@@ -1,0 +1,29 @@
+/localscratch/spool/slurmd/job30817597/slurm_script: line 8: cd: /home/timz//wliura2024: No such file or directory
+The following modules were not unloaded:
+  (Use "module --force purge" to unload all):
+
+  1) CCconfig        6)  ucx/1.14.1         11) flexiblas/3.3.1
+  2) gentoo/2023     7)  libfabric/1.18.0   12) imkl/2023.2.0
+  3) gcccore/.12.3   8)  pmix/4.2.4         13) StdEnv/2023
+  4) gcc/12.3        9)  ucc/1.2.0
+  5) hwloc/2.9.1     10) openmpi/4.1.5
+wandb: Currently logged in as: timz (tgz). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.16.6
+wandb: Run data is saved locally in /project/6091805/timz/wliura2024/wandb/run-20240507_092608-e0ml1z7g
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run eager-violet-1
+wandb: ⭐️ View project at https://wandb.ai/tgz/test-run
+wandb: 🚀 View run at https://wandb.ai/tgz/test-run/runs/e0ml1z7g
+wandb: - 0.010 MB of 0.015 MB uploadedwandb: \ 0.015 MB of 0.015 MB uploadedwandb: 
+wandb: Run history:
+wandb:  acc ▂▁▆▅▅▇█▆▇█▇██
+wandb: loss █▇▅▅▂▃▁▁▂▂▁▂▁
+wandb: 
+wandb: Run summary:
+wandb:  acc 0.93744
+wandb: loss 0.09228
+wandb: 
+wandb: 🚀 View run eager-violet-1 at: https://wandb.ai/tgz/test-run/runs/e0ml1z7g
+wandb: ⭐️ View project at: https://wandb.ai/tgz/test-run
+wandb: Synced 4 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240507_092608-e0ml1z7g/logs

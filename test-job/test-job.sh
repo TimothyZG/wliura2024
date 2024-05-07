@@ -5,8 +5,8 @@
 #SBATCH --time=00:3:00    
 #SBATCH --mail-user=<tzhou13@student.ubc.ca>
 #SBATCH --mail-type=ALL
-cd ~/$projects/wliura2024
 module purge
 module load python/3.10 scipy-stack
 source ~/py310/bin/activate
-python test-job/test-script.py
+# python test-job/test-script.py
+python test-job/wandb-script.py

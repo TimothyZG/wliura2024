@@ -1,0 +1,73 @@
+The following modules were not unloaded:
+  (Use "module --force purge" to unload all):
+
+  1) CCconfig        6)  ucx/1.14.1         11) flexiblas/3.3.1
+  2) gentoo/2023     7)  libfabric/1.18.0   12) imkl/2023.2.0
+  3) gcccore/.12.3   8)  pmix/4.2.4         13) StdEnv/2023
+  4) gcc/12.3        9)  ucc/1.2.0
+  5) hwloc/2.9.1     10) openmpi/4.1.5
+wandb: Currently logged in as: timz (tgz). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.16.6
+wandb: Run data is saved locally in /project/6091805/timz/wliura2024/wandb/run-20240507_114721-f0tozy7l
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run dulcet-oath-3
+wandb: ⭐️ View project at https://wandb.ai/tgz/test-run
+wandb: 🚀 View run at https://wandb.ai/tgz/test-run/runs/f0tozy7l
+gpu availability is True, current device is cuda:0
+Downloading https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz to Data/cifar-100-python.tar.gz
+  0%|          | 0/169001437 [00:00<?, ?it/s]  0%|          | 98304/169001437 [00:00<04:15, 661544.48it/s]  0%|          | 458752/169001437 [00:00<01:25, 1967325.10it/s]  1%|          | 1835008/169001437 [00:00<00:26, 6282311.77it/s]  3%|▎         | 4227072/169001437 [00:00<00:19, 8612104.46it/s]  7%|▋         | 11501568/169001437 [00:00<00:06, 24091592.42it/s] 10%|█         | 17694720/169001437 [00:00<00:04, 32721492.87it/s] 14%|█▍        | 23298048/169001437 [00:00<00:03, 38859880.69it/s] 17%|█▋        | 27918336/169001437 [00:01<00:03, 40515800.26it/s] 20%|██        | 33980416/169001437 [00:01<00:02, 46121746.29it/s] 23%|██▎       | 38895616/169001437 [00:01<00:02, 46739247.61it/s] 26%|██▌       | 43778048/169001437 [00:01<00:02, 46635794.70it/s] 29%|██▉       | 49676288/169001437 [00:01<00:02, 49268590.57it/s] 33%|███▎      | 55181312/169001437 [00:01<00:02, 50927951.24it/s] 36%|███▌      | 60358656/169001437 [00:01<00:02, 48030225.31it/s] 39%|███▉      | 65798144/169001437 [00:01<00:02, 49810601.94it/s] 42%|████▏     | 71008256/169001437 [00:01<00:01, 50398694.95it/s] 45%|████▌     | 76185600/169001437 [00:01<00:01, 50793565.89it/s] 48%|████▊     | 81592320/169001437 [00:02<00:01, 51742028.65it/s] 51%|█████▏    | 86802432/169001437 [00:02<00:01, 50638089.20it/s] 54%|█████▍    | 92045312/169001437 [00:02<00:01, 51135874.32it/s] 58%|█████▊    | 97353728/169001437 [00:02<00:01, 51384172.06it/s] 61%|██████    | 102531072/169001437 [00:02<00:01, 50644998.94it/s] 64%|██████▍   | 107937792/169001437 [00:02<00:01, 51644058.28it/s] 67%|██████▋   | 113278976/169001437 [00:02<00:01, 51550389.34it/s] 70%|███████   | 118456320/169001437 [00:02<00:00, 51217171.84it/s] 73%|███████▎  | 123600896/169001437 [00:02<00:00, 51053570.94it/s] 77%|███████▋  | 129302528/169001437 [00:02<00:00, 52798082.71it/s] 80%|███████▉  | 134610944/169001437 [00:03<00:00, 51412405.87it/s] 83%|████████▎ | 139788288/169001437 [00:03<00:00, 50344975.10it/s] 86%|████████▌ | 145555456/169001437 [00:03<00:00, 52118454.54it/s] 89%|████████▉ | 150798336/169001437 [00:03<00:00, 51906985.51it/s] 92%|█████████▏| 156008448/169001437 [00:03<00:00, 50894039.90it/s] 95%|█████████▌| 161349632/169001437 [00:03<00:00, 51610947.64it/s] 99%|█████████▊| 166821888/169001437 [00:03<00:00, 52500755.69it/s]100%|██████████| 169001437/169001437 [00:03<00:00, 44682880.23it/s]
+Downloading: "https://download.pytorch.org/models/resnet50-11ad3fa6.pth" to /home/timz/.cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth
+Extracting Data/cifar-100-python.tar.gz to Data
+Files already downloaded and verified
+  0%|          | 0.00/97.8M [00:00<?, ?B/s]  0%|          | 256k/97.8M [00:00<00:51, 2.00MB/s]  1%|          | 1.00M/97.8M [00:00<00:20, 5.05MB/s]  4%|▍         | 3.88M/97.8M [00:00<00:06, 15.3MB/s] 10%|█         | 9.88M/97.8M [00:00<00:02, 32.4MB/s] 16%|█▌        | 15.9M/97.8M [00:00<00:02, 42.1MB/s] 22%|██▏       | 21.4M/97.8M [00:00<00:01, 47.0MB/s] 28%|██▊       | 27.1M/97.8M [00:00<00:01, 50.5MB/s] 34%|███▎      | 33.0M/97.8M [00:00<00:01, 53.6MB/s] 40%|███▉      | 38.8M/97.8M [00:00<00:01, 55.5MB/s] 45%|████▌     | 44.2M/97.8M [00:01<00:01, 56.1MB/s] 51%|█████▏    | 50.1M/97.8M [00:01<00:00, 57.3MB/s] 57%|█████▋    | 55.9M/97.8M [00:01<00:00, 58.0MB/s] 63%|██████▎   | 61.6M/97.8M [00:01<00:00, 58.4MB/s] 69%|██████▉   | 67.2M/97.8M [00:01<00:00, 58.1MB/s] 75%|███████▍  | 73.1M/97.8M [00:01<00:00, 58.7MB/s] 81%|████████  | 78.9M/97.8M [00:01<00:00, 59.1MB/s] 87%|████████▋ | 84.6M/97.8M [00:01<00:00, 59.2MB/s] 92%|█████████▏| 90.4M/97.8M [00:01<00:00, 59.0MB/s] 98%|█████████▊| 96.1M/97.8M [00:01<00:00, 58.5MB/s]100%|██████████| 97.8M/97.8M [00:02<00:00, 51.2MB/s]
+/home/timz/py310/lib/python3.10/site-packages/torch/autograd/graph.py:744: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at /home/coulombc/wheels_builder/tmp.2617/python-3.10/torch/aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+model is moved to cuda:0
+Epoch 1/20 Completed |        Loss: 4.5956 | Accuracy: 1.24%
+Epoch 2/20 Completed |        Loss: 4.4023 | Accuracy: 3.00%
+Epoch 3/20 Completed |        Loss: 4.2149 | Accuracy: 5.28%
+Epoch 4/20 Completed |        Loss: 4.1557 | Accuracy: 9.74%
+Epoch 5/20 Completed |        Loss: 3.7797 | Accuracy: 16.26%
+Epoch 6/20 Completed |        Loss: 3.3984 | Accuracy: 21.93%
+Epoch 7/20 Completed |        Loss: 3.3228 | Accuracy: 28.21%
+Epoch 8/20 Completed |        Loss: 2.8809 | Accuracy: 33.79%
+Epoch 9/20 Completed |        Loss: 2.6078 | Accuracy: 38.69%
+Epoch 10/20 Completed |        Loss: 2.7882 | Accuracy: 43.33%
+Epoch 11/20 Completed |        Loss: 2.5217 | Accuracy: 47.49%
+Epoch 12/20 Completed |        Loss: 1.9958 | Accuracy: 52.67%
+Epoch 13/20 Completed |        Loss: 1.9446 | Accuracy: 56.80%
+Epoch 14/20 Completed |        Loss: 1.5395 | Accuracy: 60.51%
+Epoch 15/20 Completed |        Loss: 1.8096 | Accuracy: 63.80%
+Epoch 16/20 Completed |        Loss: 1.4541 | Accuracy: 66.44%
+Epoch 17/20 Completed |        Loss: 1.2604 | Accuracy: 69.98%
+Epoch 18/20 Completed |        Loss: 1.4737 | Accuracy: 72.59%
+Epoch 19/20 Completed |        Loss: 0.8071 | Accuracy: 75.29%
+Epoch 20/20 Completed |        Loss: 0.9646 | Accuracy: 77.67%
+Accuracy on the test set: 84.90%
+Traceback (most recent call last):
+  File "/project/6091805/timz/wliura2024/exp1/resnet50.py", line 130, in <module>
+    # Save the model state dictionary
+  File "/home/timz/py310/lib/python3.10/site-packages/torch/serialization.py", line 627, in save
+    with _open_zipfile_writer(f) as opened_zipfile:
+  File "/home/timz/py310/lib/python3.10/site-packages/torch/serialization.py", line 501, in _open_zipfile_writer
+    return container(name_or_buffer)
+  File "/home/timz/py310/lib/python3.10/site-packages/torch/serialization.py", line 472, in __init__
+    super().__init__(torch._C.PyTorchFileWriter(self.name))
+RuntimeError: Parent directory models does not exist.
+wandb: - 0.004 MB of 0.004 MB uploadedwandb: \ 0.004 MB of 0.004 MB uploadedwandb: | 0.004 MB of 0.004 MB uploadedwandb: / 0.010 MB of 0.018 MB uploadedwandb: - 0.018 MB of 0.018 MB uploadedwandb: 
+wandb: Run history:
+wandb: accuracy ▁▁▁▁▁▁▂▂▂▂▃▃▃▃▄▄▅▄▄▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇▇▇████
+wandb:    batch ▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁█
+wandb:    epoch ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▇▇▇▇▇▇████
+wandb:     loss █████▇▇▇▇▇▆▆▆▆▅▅▄▅▄▄▄▄▄▃▃▃▃▂▂▂▂▂▂▂▂▂▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb: accuracy 77.74086
+wandb:    batch 300
+wandb:    epoch 19
+wandb:     loss 1.10183
+wandb: 
+wandb: 🚀 View run dulcet-oath-3 at: https://wandb.ai/tgz/test-run/runs/f0tozy7l
+wandb: ⭐️ View project at: https://wandb.ai/tgz/test-run
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240507_114721-f0tozy7l/logs
