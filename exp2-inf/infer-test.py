@@ -1,9 +1,16 @@
 from caltech256loader import setup_caltech256
 import torch
 import torchvision.models as models
+import torch.nn as nn
+
+num_class=257
 res18 = models.resnet18(pretrained=False)
+res18.fc = nn.Linear(res18.fc.in_features, num_class)
 res50 = models.resnet50(pretrained=False)
+res50.fc = nn.Linear(res50.fc.in_features, num_class)
 res101 = models.resnet101(pretrained=False)
+res101.fc = nn.Linear(res101.fc.in_features, num_class)
+
 res18.load_state_dict(torch.load('./models/pt-resnet18-cal256-1.pth'))
 res50.load_state_dict(torch.load('./models/pt-resnet50-cal256-1.pth'))
 res101.load_state_dict(torch.load('./models/pt-resnet101-cal256-1.pth'))

@@ -6,6 +6,7 @@
 #SBATCH --time=01:00:00
 #SBATCH --mail-user=<tiange.zhou@outlook.com>
 #SBATCH --mail-type=ALL
+#SBATCH --output=output/slurm-%j.out
 module purge
 module load python/3.10 scipy-stack
 source ~/py310/bin/activate
