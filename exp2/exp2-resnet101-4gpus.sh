@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:v100l:4
 #SBATCH --ntasks-per-node=4
-#SBATCH --time=02:00:00
+#SBATCH --time=04:00:00
 #SBATCH --mail-user=<tiange.zhou@outlook.com>
 #SBATCH --mail-type=ALL
 #SBATCH --output=output/slurm-%j.out

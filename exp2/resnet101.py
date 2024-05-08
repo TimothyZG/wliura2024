@@ -5,18 +5,19 @@ import torch.optim as optim
 import torch.nn as nn
 import wandb
 
-num_epochs = 50
+num_epochs = 80
 log_interval = 100
 num_classes = 257
 lr=0.001
 batch_size = 128
 # Define a path to save the model
-model_path = "models/pt-resnet101-cal256-1.pth"
+model_path = "models/pt-resnet101-cal256-2.pth"
 
 # start a new wandb run to track this script
 wandb.init(
     # set the wandb project where this run will be logged
-    project="Exp2",
+    project="Exp3",
+    name="res101-cal256",
     # track hyperparameters and run metadata
     config={
     "learning_rate": lr,
