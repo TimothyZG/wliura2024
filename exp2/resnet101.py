@@ -42,6 +42,9 @@ loss_function = nn.CrossEntropyLoss()
 num_features = model.fc.in_features
 model.fc = nn.Linear(num_features, num_classes)
 
+if torch.cuda.device_count() > 1:
+    model = nn.DataParallel(model)
+    
 model.train()
 model = model.to(device)
 print(f"model is moved to {device}")

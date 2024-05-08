@@ -1,93 +1,0 @@
-The following modules were not unloaded:
-  (Use "module --force purge" to unload all):
-
-  1) CCconfig        6)  ucx/1.14.1         11) flexiblas/3.3.1
-  2) gentoo/2023     7)  libfabric/1.18.0   12) imkl/2023.2.0
-  3) gcccore/.12.3   8)  pmix/4.2.4         13) StdEnv/2023
-  4) gcc/12.3        9)  ucc/1.2.0
-  5) hwloc/2.9.1     10) openmpi/4.1.5
-wandb: Currently logged in as: timz (tgz). Use `wandb login --relogin` to force relogin
-wandb: wandb version 0.17.0 is available!  To upgrade, please run:
-wandb:  $ pip install wandb --upgrade
-wandb: Tracking run with wandb version 0.16.6
-wandb: Run data is saved locally in /project/6091805/timz/wliura2024/wandb/run-20240507_153608-vucv7uta
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run northern-deluge-2
-wandb: ⭐️ View project at https://wandb.ai/tgz/Exp1
-wandb: 🚀 View run at https://wandb.ai/tgz/Exp1/runs/vucv7uta
-Downloading: "https://download.pytorch.org/models/resnet101-cd907fc2.pth" to /home/timz/.cache/torch/hub/checkpoints/resnet101-cd907fc2.pth
-gpu availability is True, current device is cuda:0
-Files already downloaded and verified
-Files already downloaded and verified
-  0%|          | 0.00/171M [00:00<?, ?B/s]  0%|          | 384k/171M [00:00<01:00, 2.96MB/s]  1%|          | 1.50M/171M [00:00<00:23, 7.45MB/s]  3%|▎         | 5.88M/171M [00:00<00:07, 23.6MB/s]  5%|▌         | 9.38M/171M [00:00<00:05, 28.5MB/s]  9%|▊         | 14.9M/171M [00:00<00:04, 38.6MB/s] 12%|█▏        | 20.4M/171M [00:00<00:03, 44.9MB/s] 15%|█▌        | 26.1M/171M [00:00<00:03, 49.4MB/s] 19%|█▊        | 31.8M/171M [00:00<00:02, 52.4MB/s] 22%|██▏       | 37.5M/171M [00:00<00:02, 54.4MB/s] 25%|██▌       | 43.1M/171M [00:01<00:02, 55.5MB/s] 29%|██▊       | 49.0M/171M [00:01<00:02, 57.3MB/s] 32%|███▏      | 54.8M/171M [00:01<00:02, 58.1MB/s] 35%|███▌      | 60.4M/171M [00:01<00:01, 58.0MB/s] 39%|███▉      | 66.1M/171M [00:01<00:01, 58.0MB/s] 42%|████▏     | 72.0M/171M [00:01<00:01, 58.7MB/s] 46%|████▌     | 77.9M/171M [00:01<00:01, 59.3MB/s] 49%|████▉     | 83.6M/171M [00:01<00:01, 59.1MB/s] 52%|█████▏    | 89.4M/171M [00:01<00:01, 59.2MB/s] 56%|█████▌    | 95.1M/171M [00:01<00:01, 58.7MB/s] 59%|█████▉    | 101M/171M [00:02<00:01, 58.9MB/s]  62%|██████▏   | 106M/171M [00:02<00:01, 58.6MB/s] 66%|██████▌   | 112M/171M [00:02<00:01, 58.3MB/s] 69%|██████▉   | 118M/171M [00:02<00:00, 58.8MB/s] 73%|███████▎  | 124M/171M [00:02<00:00, 59.4MB/s] 76%|███████▌  | 130M/171M [00:02<00:00, 59.4MB/s] 79%|███████▉  | 136M/171M [00:02<00:00, 58.9MB/s] 83%|████████▎ | 141M/171M [00:02<00:00, 57.0MB/s] 86%|████████▌ | 147M/171M [00:02<00:00, 57.1MB/s] 89%|████████▉ | 152M/171M [00:02<00:00, 56.9MB/s] 93%|█████████▎| 158M/171M [00:03<00:00, 58.3MB/s] 96%|█████████▌| 164M/171M [00:03<00:00, 58.1MB/s] 99%|█████████▉| 169M/171M [00:03<00:00, 58.3MB/s]100%|██████████| 171M/171M [00:03<00:00, 53.9MB/s]
-/home/timz/py310/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at /home/coulombc/wheels_builder/tmp.2617/python-3.10/torch/aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
-  return F.conv2d(input, weight, bias, self.stride,
-model is moved to cuda:0
-Epoch 1/50 Completed |        Loss: 4.5879 | Accuracy: 1.36%
-Epoch 2/50 Completed |        Loss: 4.6207 | Accuracy: 3.36%
-Epoch 3/50 Completed |        Loss: 4.3652 | Accuracy: 7.36%
-Epoch 4/50 Completed |        Loss: 3.9132 | Accuracy: 12.85%
-Epoch 5/50 Completed |        Loss: 3.6293 | Accuracy: 19.22%
-Epoch 6/50 Completed |        Loss: 3.1612 | Accuracy: 25.08%
-Epoch 7/50 Completed |        Loss: 3.0360 | Accuracy: 30.51%
-Epoch 8/50 Completed |        Loss: 2.7192 | Accuracy: 35.84%
-Epoch 9/50 Completed |        Loss: 2.7388 | Accuracy: 40.80%
-Epoch 10/50 Completed |        Loss: 2.4025 | Accuracy: 44.91%
-Epoch 11/50 Completed |        Loss: 2.1224 | Accuracy: 48.70%
-Epoch 12/50 Completed |        Loss: 2.3588 | Accuracy: 52.47%
-Epoch 13/50 Completed |        Loss: 1.8215 | Accuracy: 56.45%
-Epoch 14/50 Completed |        Loss: 1.6064 | Accuracy: 60.07%
-Epoch 15/50 Completed |        Loss: 1.4779 | Accuracy: 63.46%
-Epoch 16/50 Completed |        Loss: 1.4634 | Accuracy: 67.03%
-Epoch 17/50 Completed |        Loss: 1.3375 | Accuracy: 70.47%
-Epoch 18/50 Completed |        Loss: 1.1468 | Accuracy: 72.94%
-Epoch 19/50 Completed |        Loss: 1.3577 | Accuracy: 74.83%
-Epoch 20/50 Completed |        Loss: 1.0197 | Accuracy: 76.68%
-Epoch 21/50 Completed |        Loss: 0.8795 | Accuracy: 79.79%
-Epoch 22/50 Completed |        Loss: 0.8109 | Accuracy: 82.26%
-Epoch 23/50 Completed |        Loss: 0.8278 | Accuracy: 83.32%
-Epoch 24/50 Completed |        Loss: 0.9806 | Accuracy: 85.82%
-Epoch 25/50 Completed |        Loss: 0.6692 | Accuracy: 87.50%
-Epoch 26/50 Completed |        Loss: 0.7063 | Accuracy: 88.25%
-Epoch 27/50 Completed |        Loss: 0.6806 | Accuracy: 88.96%
-Epoch 28/50 Completed |        Loss: 0.8215 | Accuracy: 89.90%
-Epoch 29/50 Completed |        Loss: 0.4512 | Accuracy: 90.34%
-Epoch 30/50 Completed |        Loss: 0.8790 | Accuracy: 91.75%
-Epoch 31/50 Completed |        Loss: 0.3770 | Accuracy: 93.51%
-Epoch 32/50 Completed |        Loss: 0.5432 | Accuracy: 94.38%
-Epoch 33/50 Completed |        Loss: 0.3439 | Accuracy: 95.01%
-Epoch 34/50 Completed |        Loss: 0.2483 | Accuracy: 95.40%
-Epoch 35/50 Completed |        Loss: 0.3596 | Accuracy: 95.42%
-Epoch 36/50 Completed |        Loss: 0.1699 | Accuracy: 95.68%
-Epoch 37/50 Completed |        Loss: 0.2033 | Accuracy: 96.65%
-Epoch 38/50 Completed |        Loss: 0.6994 | Accuracy: 94.20%
-Epoch 39/50 Completed |        Loss: 0.3892 | Accuracy: 95.42%
-Epoch 40/50 Completed |        Loss: 0.3917 | Accuracy: 96.40%
-Epoch 41/50 Completed |        Loss: 0.2504 | Accuracy: 96.90%
-Epoch 42/50 Completed |        Loss: 0.1884 | Accuracy: 97.05%
-Epoch 43/50 Completed |        Loss: 0.2313 | Accuracy: 97.53%
-Epoch 44/50 Completed |        Loss: 0.2099 | Accuracy: 97.69%
-Epoch 45/50 Completed |        Loss: 0.1064 | Accuracy: 97.63%
-Epoch 46/50 Completed |        Loss: 0.1672 | Accuracy: 97.72%
-Epoch 47/50 Completed |        Loss: 0.1512 | Accuracy: 97.95%
-Epoch 48/50 Completed |        Loss: 0.2135 | Accuracy: 98.03%
-Epoch 49/50 Completed |        Loss: 0.2116 | Accuracy: 98.34%
-Epoch 50/50 Completed |        Loss: 0.1201 | Accuracy: 98.49%
-Accuracy on the test set: 99.11%
-wandb: - 0.004 MB of 0.004 MB uploadedwandb: \ 0.004 MB of 0.004 MB uploadedwandb: | 0.011 MB of 0.020 MB uploadedwandb: / 0.020 MB of 0.020 MB uploadedwandb: 
-wandb: Run history:
-wandb: accuracy ▁▁▁▂▃▃▃▄▄▅▅▅▆▆▆▆▇▇▇▇▇▇▇▇████████████████
-wandb:    batch ▁▁██▁▁██▁▁██▁██▁▁██▁▁██▁▁█▁▁██▁▁██▁▁██▁█
-wandb:    epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
-wandb:     loss ███▇▆▆▅▅▄▄▄▄▃▃▃▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
-wandb: 
-wandb: Run summary:
-wandb: accuracy 98.48162
-wandb:    batch 300
-wandb:    epoch 49
-wandb:     loss 0.04445
-wandb: 
-wandb: 🚀 View run northern-deluge-2 at: https://wandb.ai/tgz/Exp1/runs/vucv7uta
-wandb: ⭐️ View project at: https://wandb.ai/tgz/Exp1
-wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
-wandb: Find logs at: ./wandb/run-20240507_153608-vucv7uta/logs
