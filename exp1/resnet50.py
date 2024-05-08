@@ -13,7 +13,7 @@ num_classes = 100
 lr=0.001
 batch_size = 128
 # Define a path to save the model
-model_path = "models/pt-resnet50-cars-2.pth"
+model_path = "models/pt-resnet50-cars-1.pth"
 
 # start a new wandb run to track this script
 wandb.init(

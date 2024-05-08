@@ -1,0 +1,93 @@
+The following modules were not unloaded:
+  (Use "module --force purge" to unload all):
+
+  1) CCconfig        6)  ucx/1.14.1         11) flexiblas/3.3.1
+  2) gentoo/2023     7)  libfabric/1.18.0   12) imkl/2023.2.0
+  3) gcccore/.12.3   8)  pmix/4.2.4         13) StdEnv/2023
+  4) gcc/12.3        9)  ucc/1.2.0
+  5) hwloc/2.9.1     10) openmpi/4.1.5
+wandb: Currently logged in as: timz (tgz). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.17.0 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.16.6
+wandb: Run data is saved locally in /project/6091805/timz/wliura2024/wandb/run-20240507_153608-xrcwqrkw
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run wandering-field-1
+wandb: ⭐️ View project at https://wandb.ai/tgz/Exp1
+wandb: 🚀 View run at https://wandb.ai/tgz/Exp1/runs/xrcwqrkw
+Downloading: "https://download.pytorch.org/models/resnet18-f37072fd.pth" to /home/timz/.cache/torch/hub/checkpoints/resnet18-f37072fd.pth
+gpu availability is True, current device is cuda:0
+Files already downloaded and verified
+Files already downloaded and verified
+  0%|          | 0.00/44.7M [00:00<?, ?B/s]  0%|          | 128k/44.7M [00:00<00:36, 1.27MB/s]  1%|▏         | 640k/44.7M [00:00<00:13, 3.38MB/s]  6%|▌         | 2.50M/44.7M [00:00<00:04, 10.5MB/s] 17%|█▋        | 7.75M/44.7M [00:00<00:01, 27.6MB/s] 30%|██▉       | 13.4M/44.7M [00:00<00:00, 38.7MB/s] 43%|████▎     | 19.1M/44.7M [00:00<00:00, 45.3MB/s] 56%|█████▋    | 25.1M/44.7M [00:00<00:00, 50.1MB/s] 69%|██████▉   | 31.0M/44.7M [00:00<00:00, 53.3MB/s] 81%|████████▏ | 36.4M/44.7M [00:00<00:00, 54.1MB/s] 94%|█████████▍| 42.1M/44.7M [00:01<00:00, 55.4MB/s]100%|██████████| 44.7M/44.7M [00:01<00:00, 43.7MB/s]
+/home/timz/py310/lib/python3.10/site-packages/torch/nn/modules/conv.py:456: UserWarning: Plan failed with a cudnnException: CUDNN_BACKEND_EXECUTION_PLAN_DESCRIPTOR: cudnnFinalize Descriptor Failed cudnn_status: CUDNN_STATUS_NOT_SUPPORTED (Triggered internally at /home/coulombc/wheels_builder/tmp.2617/python-3.10/torch/aten/src/ATen/native/cudnn/Conv_v8.cpp:919.)
+  return F.conv2d(input, weight, bias, self.stride,
+model is moved to cuda:0
+Epoch 1/50 Completed |        Loss: 2.9305 | Accuracy: 22.03%
+Epoch 2/50 Completed |        Loss: 2.0837 | Accuracy: 41.16%
+Epoch 3/50 Completed |        Loss: 1.9849 | Accuracy: 49.75%
+Epoch 4/50 Completed |        Loss: 1.9352 | Accuracy: 55.96%
+Epoch 5/50 Completed |        Loss: 1.5466 | Accuracy: 61.56%
+Epoch 6/50 Completed |        Loss: 1.4480 | Accuracy: 66.47%
+Epoch 7/50 Completed |        Loss: 1.1426 | Accuracy: 71.31%
+Epoch 8/50 Completed |        Loss: 1.1904 | Accuracy: 75.41%
+Epoch 9/50 Completed |        Loss: 0.9604 | Accuracy: 79.11%
+Epoch 10/50 Completed |        Loss: 1.0551 | Accuracy: 83.20%
+Epoch 11/50 Completed |        Loss: 0.6980 | Accuracy: 86.75%
+Epoch 12/50 Completed |        Loss: 0.5862 | Accuracy: 89.51%
+Epoch 13/50 Completed |        Loss: 0.5247 | Accuracy: 91.74%
+Epoch 14/50 Completed |        Loss: 0.5295 | Accuracy: 94.09%
+Epoch 15/50 Completed |        Loss: 0.3975 | Accuracy: 95.45%
+Epoch 16/50 Completed |        Loss: 0.3522 | Accuracy: 96.67%
+Epoch 17/50 Completed |        Loss: 0.3373 | Accuracy: 97.53%
+Epoch 18/50 Completed |        Loss: 0.1648 | Accuracy: 98.11%
+Epoch 19/50 Completed |        Loss: 0.1168 | Accuracy: 98.67%
+Epoch 20/50 Completed |        Loss: 0.1089 | Accuracy: 99.02%
+Epoch 21/50 Completed |        Loss: 0.1344 | Accuracy: 99.16%
+Epoch 22/50 Completed |        Loss: 0.2156 | Accuracy: 99.38%
+Epoch 23/50 Completed |        Loss: 0.0798 | Accuracy: 99.49%
+Epoch 24/50 Completed |        Loss: 0.0840 | Accuracy: 99.56%
+Epoch 25/50 Completed |        Loss: 0.1415 | Accuracy: 99.58%
+Epoch 26/50 Completed |        Loss: 0.0872 | Accuracy: 99.70%
+Epoch 27/50 Completed |        Loss: 0.1496 | Accuracy: 99.73%
+Epoch 28/50 Completed |        Loss: 0.0532 | Accuracy: 99.79%
+Epoch 29/50 Completed |        Loss: 0.0605 | Accuracy: 99.82%
+Epoch 30/50 Completed |        Loss: 0.0528 | Accuracy: 99.78%
+Epoch 31/50 Completed |        Loss: 0.0865 | Accuracy: 99.80%
+Epoch 32/50 Completed |        Loss: 0.0808 | Accuracy: 99.81%
+Epoch 33/50 Completed |        Loss: 0.0381 | Accuracy: 99.84%
+Epoch 34/50 Completed |        Loss: 0.0537 | Accuracy: 99.86%
+Epoch 35/50 Completed |        Loss: 0.0704 | Accuracy: 99.87%
+Epoch 36/50 Completed |        Loss: 0.0398 | Accuracy: 99.89%
+Epoch 37/50 Completed |        Loss: 0.0688 | Accuracy: 99.89%
+Epoch 38/50 Completed |        Loss: 0.0430 | Accuracy: 99.91%
+Epoch 39/50 Completed |        Loss: 0.0353 | Accuracy: 99.89%
+Epoch 40/50 Completed |        Loss: 0.0515 | Accuracy: 99.92%
+Epoch 41/50 Completed |        Loss: 0.0779 | Accuracy: 99.88%
+Epoch 42/50 Completed |        Loss: 0.0248 | Accuracy: 99.91%
+Epoch 43/50 Completed |        Loss: 0.0191 | Accuracy: 99.91%
+Epoch 44/50 Completed |        Loss: 0.0248 | Accuracy: 99.92%
+Epoch 45/50 Completed |        Loss: 0.0308 | Accuracy: 99.93%
+Epoch 46/50 Completed |        Loss: 0.0535 | Accuracy: 99.92%
+Epoch 47/50 Completed |        Loss: 0.0163 | Accuracy: 99.91%
+Epoch 48/50 Completed |        Loss: 0.0455 | Accuracy: 99.92%
+Epoch 49/50 Completed |        Loss: 0.0558 | Accuracy: 99.92%
+Epoch 50/50 Completed |        Loss: 0.0264 | Accuracy: 99.94%
+Accuracy on the test set: 99.98%
+wandb: - 0.004 MB of 0.004 MB uploadedwandb: \ 0.004 MB of 0.004 MB uploadedwandb: | 0.004 MB of 0.004 MB uploadedwandb: / 0.004 MB of 0.004 MB uploadedwandb: - 0.004 MB of 0.004 MB uploadedwandb: \ 0.004 MB of 0.004 MB uploadedwandb: | 0.011 MB of 0.016 MB uploadedwandb: / 0.020 MB of 0.020 MB uploadedwandb: 
+wandb: Run history:
+wandb: accuracy ▁▃▄▅▆▆▆▆▇▇▇█████████████████████████████
+wandb:    batch ▁▁██▁▁██▁▁██▁██▁▁██▁▁██▁▁█▁▁██▁▁██▁▁██▁█
+wandb:    epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:     loss █▅▅▄▃▃▃▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb: accuracy 99.94809
+wandb:    batch 300
+wandb:    epoch 49
+wandb:     loss 0.03025
+wandb: 
+wandb: 🚀 View run wandering-field-1 at: https://wandb.ai/tgz/Exp1/runs/xrcwqrkw
+wandb: ⭐️ View project at: https://wandb.ai/tgz/Exp1
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240507_153608-xrcwqrkw/logs
