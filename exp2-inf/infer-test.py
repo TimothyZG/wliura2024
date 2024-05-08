@@ -2,6 +2,7 @@ from caltech256loader import setup_caltech256
 import torch
 import torchvision.models as models
 import torch.nn as nn
+import pandas as pd
 
 num_class=257
 res18 = models.resnet18(pretrained=False)
@@ -17,9 +18,12 @@ res101.load_state_dict(torch.load('./models/pt-resnet101-cal256-1.pth'))
 res18.eval()
 res50.eval()
 res101.eval()
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+res18 = res18.to(device)
+res50 = res50.to(device)
+res101 = res101.to(device)
 _, test_dataloader = setup_caltech256(data_root='Data/Caltech256', batch_size=128, num_workers=4)
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # Initialize variables to track performance metrics
 total_correct18 = 0
