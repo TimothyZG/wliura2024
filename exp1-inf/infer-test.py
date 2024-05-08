@@ -7,8 +7,8 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 from torch.utils.data import DataLoader
 
-
 num_class=100
+batch_size = 128
 res18 = models.resnet18(pretrained=False)
 res18.fc = nn.Linear(res18.fc.in_features, num_class)
 res50 = models.resnet50(pretrained=False)
