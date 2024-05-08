@@ -3,6 +3,8 @@ import torch
 import torchvision.models as models
 import torch.nn as nn
 import pandas as pd
+from torch.nn.functional import softmax
+
 
 num_class=257
 res18 = models.resnet18(pretrained=False)
@@ -24,6 +26,11 @@ res50 = res50.to(device)
 res101 = res101.to(device)
 _, test_dataloader = setup_caltech256(data_root='Data/Caltech256', batch_size=128, num_workers=4)
 
+columns = [f'class_{i}' for i in range(num_class)]
+predictions_df_18 = pd.DataFrame(columns=columns)
+predictions_df_50 = pd.DataFrame(columns=columns)
+predictions_df_101 = pd.DataFrame(columns=columns)
+targets_df = pd.DataFrame(columns=['target'])
 
 # Initialize variables to track performance metrics
 total_correct18 = 0
@@ -40,6 +47,15 @@ with torch.no_grad():
         outputs18 = res18(data)
         outputs50 = res50(data)
         outputs101 = res101(data)
+        
+        probs18 = softmax(outputs18, dim=1)
+        probs50 = softmax(res50(data), dim=1)
+        probs101 = softmax(res101(data), dim=1)
+        
+        predictions_df_18 = pd.concat([predictions_df_18,pd.DataFrame(probs18.cpu().numpy(), columns=columns)], ignore_index=True)
+        predictions_df_50 = pd.concat([predictions_df_50,pd.DataFrame(probs50.cpu().numpy(), columns=columns)], ignore_index=True)
+        predictions_df_101 = pd.concat([predictions_df_101,pd.DataFrame(probs101.cpu().numpy(), columns=columns)], ignore_index=True)
+        targets_df = pd.concat([targets_df,pd.DataFrame({'target': targets.cpu().numpy()})], ignore_index=True)
 
         # Get predictions
         _, predicted18 = torch.max(outputs18, 1)
@@ -59,3 +75,9 @@ accuracy101 = total_correct101 / total_samples
 print(f"Resnet18 Accuracy on the test set: {100 * accuracy18:.2f}%")
 print(f"Resnet50 Accuracy on the test set: {100 * accuracy50:.2f}%")
 print(f"Resnet101 Accuracy on the test set: {100 * accuracy101:.2f}%")
+
+predictions_df_18.to_csv('exp2-inf/predictions_res18.csv', index=False)
+predictions_df_50.to_csv('exp2-inf/predictions_res50.csv', index=False)
+predictions_df_101.to_csv('exp2-inf/predictions_res101.csv', index=False)
+targets_df.to_csv('exp2-inf/labels.csv', index=False)
+print("Predictions successfully saved to CSV files.")
