@@ -7,16 +7,22 @@ from torch.nn.functional import softmax
 
 
 num_class=257
-res18 = models.resnet18(pretrained=False)
+res18 = models.resnet18(weights=None)
 res18.fc = nn.Linear(res18.fc.in_features, num_class)
-res50 = models.resnet50(pretrained=False)
+res50 = models.resnet50(weights=None)
 res50.fc = nn.Linear(res50.fc.in_features, num_class)
-res101 = models.resnet101(pretrained=False)
+res101 = models.resnet101(weights=None)
 res101.fc = nn.Linear(res101.fc.in_features, num_class)
 
-res18.load_state_dict(torch.load('./models/pt-resnet18-cal256-1.pth'))
-res50.load_state_dict(torch.load('./models/pt-resnet50-cal256-1.pth'))
-res101.load_state_dict(torch.load('./models/pt-resnet101-cal256-1.pth'))
+res18.load_state_dict(torch.load('./models/pt-resnet18-cal256-2.pth'))
+res50.load_state_dict(torch.load('./models/pt-resnet50-cal256-2.pth'))
+# Load the state dict from the file
+state_dict = torch.load('./models/pt-resnet101-cal256-2.pth')
+# Remove the 'module.' prefix from each key [This is due to rsnet101 being trained with parallelism]
+new_state_dict = {key.replace('module.', ''): value for key, value in state_dict.items()}
+# Load the adjusted state dict into your model
+res101.load_state_dict(new_state_dict)
+# res101.load_state_dict(torch.load('./models/pt-resnet101-cal256-2.pth'))
 res18.eval()
 res50.eval()
 res101.eval()
@@ -76,8 +82,8 @@ print(f"Resnet18 Accuracy on the test set: {100 * accuracy18:.2f}%")
 print(f"Resnet50 Accuracy on the test set: {100 * accuracy50:.2f}%")
 print(f"Resnet101 Accuracy on the test set: {100 * accuracy101:.2f}%")
 
-predictions_df_18.to_csv('exp2-inf/predictions_res18.csv', index=False)
-predictions_df_50.to_csv('exp2-inf/predictions_res50.csv', index=False)
-predictions_df_101.to_csv('exp2-inf/predictions_res101.csv', index=False)
+predictions_df_18.to_csv('exp2-inf/predictions_res18_2.csv', index=False)
+predictions_df_50.to_csv('exp2-inf/predictions_res50_2.csv', index=False)
+predictions_df_101.to_csv('exp2-inf/predictions_res101_2.csv', index=False)
 targets_df.to_csv('exp2-inf/labels.csv', index=False)
 print("Predictions successfully saved to CSV files.")
