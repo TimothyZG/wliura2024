@@ -7,18 +7,19 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 import wandb
 
-num_epochs = 60
+num_epochs = 80
 log_interval = 100
 num_classes = 100
 lr=0.001
 batch_size = 128
 # Define a path to save the model
-model_path = "models/pt-resnet18-cars-1.pth"
+model_path = "models/pt-resnet18-cifar-2.pth"
 
 # start a new wandb run to track this script
 wandb.init(
     # set the wandb project where this run will be logged
-    project="Exp1",
+    project="Exp1-80epochs",
+    name="res50-cal256",
     # track hyperparameters and run metadata
     config={
     "learning_rate": lr,
