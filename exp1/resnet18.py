@@ -19,7 +19,7 @@ model_path = "models/pt-resnet18-cifar-2.pth"
 wandb.init(
     # set the wandb project where this run will be logged
     project="Exp1-80epochs",
-    name="res50-cal256",
+    name="res18-cal256",
     # track hyperparameters and run metadata
     config={
     "learning_rate": lr,
