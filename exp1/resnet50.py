@@ -7,7 +7,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 import wandb
 
-num_epochs = 50
+num_epochs = 60
 log_interval = 100
 num_classes = 100
 lr=0.001
@@ -42,7 +42,7 @@ train_data = datasets.CIFAR100(
 
 test_data = datasets.CIFAR100(
     root="Data",
-    train=True,
+    train=False,
     download=True,
     transform=ToTensor()
 )

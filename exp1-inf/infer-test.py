@@ -29,7 +29,7 @@ res101 = res101.to(device)
 
 test_data = datasets.CIFAR100(
     root="Data",
-    train=True,
+    train=False,
     download=True,
     transform=ToTensor()
 )
