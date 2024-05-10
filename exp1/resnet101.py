@@ -53,7 +53,7 @@ test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=False)
 
 model = models.resnet101(weights='IMAGENET1K_V2')
 
-optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
+optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=0.0005)
 loss_function = nn.CrossEntropyLoss()
 
 # Swap fc layer for finetune dataset (StanfordCars in this case)
