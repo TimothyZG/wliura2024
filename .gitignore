@@ -162,3 +162,4 @@ wandb/
 Data/
 models/*.pth
 slurm*.out
+*/models/*.pth
