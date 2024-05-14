@@ -44,7 +44,8 @@ print(f"model is moved to {device}")
 for epoch in range(num_epochs):
     total = 0
     correct = 0
-    for batch_idx, (data, targets) in enumerate(train_dataloader):
+    for batch_idx, labeled_batch in enumerate(train_dataloader):
+        data, targets, metadata = labeled_batch
         data, targets = data.to(device), targets.to(device)
 
         # Zero the gradients
