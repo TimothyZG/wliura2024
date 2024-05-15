@@ -5,20 +5,18 @@ import torch.optim as optim
 import torch.nn as nn
 import wandb
 
-num_epochs = 40
+num_epochs = 5
 log_interval = 100
 num_classes = 182
 lr=0.001
-batch_size = 64
+batch_size = 128
 w_decay = 0.1
 input_size = (256,256)
 # Define a path to save the model
 model_path = "models/pt-resnet18-wild.pth"
 wandb.init(
-    # set the wandb project where this run will be logged
-    project="Exp3",
+    project="Exp3-attempt",
     name="res18-iwildcam",
-    # track hyperparameters and run metadata
     config={
     "learning_rate": lr,
     "architecture": "Resnet18",
