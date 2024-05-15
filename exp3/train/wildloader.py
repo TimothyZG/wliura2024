@@ -12,18 +12,7 @@ def load_wild_train(batch_size, input_img_size):
             [transforms.Resize(input_img_size), transforms.ToTensor()]
         ),
     )
-    # Prepare the standard data loader
-    train_loader = get_train_loader("standard", train_data, batch_size=batch_size)
-    # (Optional) Load unlabeled data
-    # dataset = get_dataset(dataset="iwildcam", download=True, unlabeled=True)
-    # unlabeled_data = dataset.get_subset(
-    #     "test_unlabeled",
-    #     transform=transforms.Compose(
-    #         [transforms.Resize(input_img_size), transforms.ToTensor()]
-    #     ),
-    # )
-    # unlabeled_loader = get_train_loader("standard", unlabeled_data, batch_size=batch_size)
-    
+    train_loader = get_train_loader("standard", train_data, batch_size=batch_size, num_workers=6)
     return train_loader #, unlabeled_loader
 
 def load_wild_test(batch_size, input_img_size):
@@ -36,7 +25,7 @@ def load_wild_test(batch_size, input_img_size):
         ),
     )
     # Prepare the evaluation data loader
-    test_loader = get_eval_loader("standard", test_data, batch_size=batch_size)
+    test_loader = get_eval_loader("standard", test_data, batch_size=batch_size, num_workers=6)
     return test_loader
 
 # usage;

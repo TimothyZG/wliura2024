@@ -163,3 +163,4 @@ Data/
 models/*.pth
 slurm*.out
 */models/*.pth
+data/*
