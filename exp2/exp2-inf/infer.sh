@@ -10,4 +10,4 @@
 module purge
 module load python/3.10 scipy-stack
 source ~/py310/bin/activate
-python exp2-inf/infer-test.py
+python exp2/exp2-inf/infer-test-ts.py

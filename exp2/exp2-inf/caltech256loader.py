@@ -22,16 +22,19 @@ def setup_caltech256(data_root='Data/Caltech256', batch_size=128, num_workers=4)
 
     # Splitting the dataset into train and test
     train_idx, test_idx = train_test_split(list(range(len(dataset))), test_size=0.2, random_state=42)
+    val_idx, test_idx = train_test_split(test_idx, test_size=0.5, random_state=42)
 
     # Create Subset for train and test from indices
     train_dataset = Subset(dataset, train_idx)
+    val_dataset = Subset(dataset, val_idx)
     test_dataset = Subset(dataset, test_idx)
 
     # Create DataLoaders for train and test datasets
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
-    return train_loader, test_loader
+    return train_loader, val_loader, test_loader
 
 # Usage
-train_loader, test_loader = setup_caltech256()
+train_loader, val_loader, test_loader = setup_caltech256()
