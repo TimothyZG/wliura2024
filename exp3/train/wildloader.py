@@ -1,10 +1,12 @@
 from wilds import get_dataset
 from wilds.common.data_loaders import get_train_loader, get_eval_loader
 import torchvision.transforms as transforms
+import os
 
 def load_wild_train(batch_size, input_img_size):
+    root_dir = os.getenv('SLURM_TMPDIR', '/tmp')
     # Load the full dataset, and download it if necessary
-    dataset = get_dataset(dataset="iwildcam", download=True)
+    dataset = get_dataset(dataset="iwildcam", root_dir=root_dir+"/data", download=True)
     # Get the training set
     train_data = dataset.get_subset(
         "train",
@@ -16,8 +18,9 @@ def load_wild_train(batch_size, input_img_size):
     return train_loader #, unlabeled_loader
 
 def load_wild_test(batch_size, input_img_size):
+    root_dir = os.getenv('SLURM_TMPDIR', '/tmp')
     # Load the full dataset, and download it if necessary
-    dataset = get_dataset(dataset="iwildcam", download=True)
+    dataset = get_dataset(dataset="iwildcam", root_dir=root_dir+"/data", download=True)
     test_data = dataset.get_subset(
         "test",
         transform=transforms.Compose(

@@ -5,7 +5,7 @@ import torch.optim as optim
 import torch.nn as nn
 import wandb
 
-num_epochs = 5
+num_epochs = 20
 log_interval = 100
 num_classes = 182
 lr=0.001
