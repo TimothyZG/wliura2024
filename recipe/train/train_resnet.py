@@ -19,8 +19,10 @@ parser.add_argument("-n","--num_workers", default=1, help="number of workers nee
 parser.add_argument("--batch_size", default=32, help="Specift batch size for dataloaders", type=int)
 parser.add_argument("-e","--num_epochs", default=80, type=int)
 parser.add_argument("--log_interval", default=100, type=int)
-parser.add_argument("--lr", default=0.001, type=float)
-parser.add_argument("-wd","--weight_decay", default=0.1, type=float)
+parser.add_argument("--lr", default=0.0005, type=float)
+parser.add_argument("-wd","--weight_decay", default=0.001, type=float)
+parser.add_argument("-o","--optimizer", default="ADAM", type=str, choices = ["ADAM", "SGD"])
+parser.add_argument("-mom","--momentum", default=0.9, type=float, help="momentum is only used when we use SGD as optimizer")
 parser.add_argument("-m","--model_name", required = True, choices = ["Resnet18", "Resnet50", "Resnet101"],type=str)
 parser.add_argument("-pn","--wandb_project_name", required = True, type=str)
 
@@ -36,7 +38,9 @@ batch_size = args.batch_size
 model_name = args.model_name
 model_root = args.model_root
 weight_decay = args.weight_decay
-model_path = model_root+"/"+model_name+"-"+dataset+".pth"
+opt = args.optimizer
+momentum = args.momentum
+model_path = model_root+"/"+model_name+"-"+dataset+"-"+opt+".pth"
 
 os.makedirs(dataset_root, exist_ok=True)
 os.makedirs(model_root, exist_ok=True)
@@ -52,7 +56,8 @@ wandb.init(
     "architecture": model_name,
     "dataset": dataset,
     "epochs": num_epochs,
-    "batch_size": batch_size
+    "batch_size": batch_size,
+    "optimizer": opt
     }
 )
 
@@ -74,8 +79,11 @@ num_features = model.fc.in_features
 model.fc = nn.Linear(num_features, num_classes)
 
 # =========== Define Optimizer =============
-optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
-# optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+if(opt=="ADAM"):
+    optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+elif(opt=="SGD"):
+    optimizer = optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
+
 # =========== Define Optimizer =============
 loss_function = nn.CrossEntropyLoss()
 
