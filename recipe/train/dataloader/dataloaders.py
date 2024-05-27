@@ -1,9 +1,11 @@
 import torchvision
-from torchvision.datasets import DTD
+from torchvision.datasets import DTD, EuroSAT
 import argparse
 import os
 from torchvision import transforms
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Subset
+from sklearn.model_selection import train_test_split
+random_state = 42 # For reproducibility
 
 transform_routine = transforms.Compose([
     transforms.Resize((224, 224)),  # Resize images to 224x224 for resnets
@@ -22,13 +24,25 @@ def get_dataloader(ds,root,bs,nworkers):
         train_loader = DataLoader(train, batch_size=bs, shuffle=True, num_workers=nworkers)
         val_loader = DataLoader(val, batch_size=bs, shuffle=False, num_workers=nworkers)
         test_loader = DataLoader(test, batch_size=bs, shuffle=False, num_workers=nworkers)
-    
-    # elif(ds=="CARS"):
-    
+    elif(ds=="EuroSAT"):
+        dataset = EuroSAT(root=root,transform=transform_routine,download=True)
+        # Splitting the dataset into train val test since EuroSAT doesn't have 
+        train_idx, test_idx = train_test_split(list(range(len(dataset))), test_size=0.4, random_state=random_state)
+        val_idx, test_idx = train_test_split(test_idx, test_size=0.5, random_state=random_state)
+        train = Subset(dataset, train_idx)
+        val = Subset(dataset, val_idx)
+        test = Subset(dataset, test_idx)
+        train_loader = DataLoader(train, batch_size=bs, shuffle=True, num_workers=nworkers)
+        val_loader = DataLoader(val, batch_size=bs, shuffle=False, num_workers=nworkers)
+        test_loader = DataLoader(test, batch_size=bs, shuffle=False, num_workers=nworkers)
+    else:
+        raise Exception(f"Unrecognized dataset provided to get_dataloader: {ds}, check spelling or implement get_numclass if working with new dataset")
     return train_loader,val_loader,test_loader
 
 def get_numclass(ds):
     if(ds=="DTD"):
         return 47
+    elif(ds=="EuroSAT"):
+        return 10
     else:
-        raise Exception("Unrecognized dataset provided to get_numclass, check spelling or implement get_numclass if working with new dataset")
+        raise Exception(f"Unrecognized dataset provided to get_numclass :{ds}, check spelling or implement get_numclass if working with new dataset")

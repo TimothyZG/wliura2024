@@ -5,8 +5,6 @@ import torch.nn as nn
 import wandb
 import os
 import argparse
-os.system('pwd')
-os.system('ls')
 
 from dataloader.dataloaders import get_dataloader, get_numclass
 
@@ -14,13 +12,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--data_root", default = "./Data", help="Directory to which dataset should be downloaded", type=str)
 parser.add_argument("--model_root", default = "./Models", help="Directory to which models should be saved", type=str)
 parser.add_argument("-d","--dataset", required = True, help="desired dataset", type=str, 
-                    choices=["Cars","DTD","MNIST","IWildCam","GTSRB","EuroSat","Resisc45","SUN397"])
+                    choices=["Cars","DTD","MNIST","IWildCam","GTSRB","EuroSAT","Resisc45","SUN397"])
 parser.add_argument("-n","--num_workers", default=1, help="number of workers needed", type=int)
 parser.add_argument("--batch_size", default=32, help="Specift batch size for dataloaders", type=int)
 parser.add_argument("-e","--num_epochs", default=80, type=int)
 parser.add_argument("--log_interval", default=100, type=int)
 parser.add_argument("--lr", default=0.0005, type=float)
-parser.add_argument("-wd","--weight_decay", default=0.001, type=float)
+parser.add_argument("-wd","--weight_decay", default=0.0, type=float)
 parser.add_argument("-o","--optimizer", default="ADAM", type=str, choices = ["ADAM", "SGD"])
 parser.add_argument("-mom","--momentum", default=0.9, type=float, help="momentum is only used when we use SGD as optimizer")
 parser.add_argument("-m","--model_name", required = True, choices = ["Resnet18", "Resnet50", "Resnet101"],type=str)
@@ -50,14 +48,15 @@ num_classes = get_numclass(dataset)
 wandb.init(
     # set the wandb project where this run will be logged
     project=args.wandb_project_name,
-    name=model_name,
+    name=model_name+"-"+opt,
     config={
     "learning_rate": lr,
     "architecture": model_name,
     "dataset": dataset,
     "epochs": num_epochs,
     "batch_size": batch_size,
-    "optimizer": opt
+    "optimizer": opt,
+    "weight_decay": weight_decay
     }
 )
 
