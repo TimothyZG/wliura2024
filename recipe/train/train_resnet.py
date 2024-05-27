@@ -5,7 +5,10 @@ import torch.nn as nn
 import wandb
 import os
 import argparse
-from recipe.dataloader.dataloaders import get_dataloader, get_numclass
+os.system('pwd')
+os.system('ls')
+
+from dataloader.dataloaders import get_dataloader, get_numclass
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--data_root", default = "./Data", help="Directory to which dataset should be downloaded", type=str)
@@ -17,7 +20,7 @@ parser.add_argument("--batch_size", default=32, help="Specift batch size for dat
 parser.add_argument("-e","--num_epochs", default=80, type=int)
 parser.add_argument("--log_interval", default=100, type=int)
 parser.add_argument("--lr", default=0.001, type=float)
-parser.add_argument("--wd", default=0.1, type=float)
+parser.add_argument("-wd","--weight_decay", default=0.1, type=float)
 parser.add_argument("-m","--model_name", required = True, choices = ["Resnet18", "Resnet50", "Resnet101"],type=str)
 parser.add_argument("-pn","--wandb_project_name", required = True, type=str)
 
@@ -33,7 +36,7 @@ batch_size = args.batch_size
 model_name = args.model_name
 model_root = args.model_root
 weight_decay = args.weight_decay
-model_path = model_root+"/"+model_name+"-"+dataset
+model_path = model_root+"/"+model_name+"-"+dataset+".pth"
 
 os.makedirs(dataset_root, exist_ok=True)
 os.makedirs(model_root, exist_ok=True)
@@ -71,7 +74,8 @@ num_features = model.fc.in_features
 model.fc = nn.Linear(num_features, num_classes)
 
 # =========== Define Optimizer =============
-optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
+# optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
 # =========== Define Optimizer =============
 loss_function = nn.CrossEntropyLoss()
 
