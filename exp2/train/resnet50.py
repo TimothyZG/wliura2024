@@ -32,7 +32,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f"gpu availability is {torch.cuda.is_available()}, \
 current device is {device}")
 
-train_dataloader, test_dataloader = setup_caltech256(data_root='Data/Caltech256', batch_size=batch_size, num_workers=4)
+train_dataloader, val_dataloader, test_dataloader = setup_caltech256(data_root='Data/Caltech256', batch_size=batch_size, num_workers=4)
 
 model = models.resnet50(weights='IMAGENET1K_V2')
 
