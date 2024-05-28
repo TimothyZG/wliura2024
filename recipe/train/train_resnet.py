@@ -97,28 +97,22 @@ for epoch in range(num_epochs):
     correct = 0
     for batch_idx, (data, targets) in enumerate(train_dataloader):
         data, targets = data.to(device), targets.to(device)
-
         # Zero the gradients
         optimizer.zero_grad()
-
         # Forward pass
         outputs = model(data)
         loss = loss_function(outputs, targets)
-
         # Perform backward pass
         loss.backward()
-
         # Update model parameters
         optimizer.step()
-        
         # Calculate accuracy
         _, predicted = torch.max(outputs, 1)
         total += targets.size(0)
         correct += (predicted == targets).sum().item()
         accuracy = 100 * correct / total
-        
+        # Log to wandb every $log_interval batches
         if batch_idx % log_interval == 0:
-            # log metrics to wandb
             wandb.log({"epoch":epoch,
                        "batch":batch_idx,
                        "loss": loss.item(),
@@ -128,6 +122,7 @@ for epoch in range(num_epochs):
         Loss: {loss.item():.4f} | Accuracy: {accuracy:.2f}%")
     
 
+# ============= EVAL ROUTINE ==============
 # Set the model to evaluation mode
 model.eval()
 
@@ -152,5 +147,5 @@ with torch.no_grad():
 accuracy = total_correct / total_samples
 print(f"Accuracy on the test set: {100 * accuracy:.2f}%")
 
-# Save the model state dictionary
+# ========== Save Model =============
 torch.save(model.state_dict(), model_path)
