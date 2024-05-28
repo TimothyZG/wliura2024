@@ -25,6 +25,8 @@ def get_dataloader(ds,root,bs,nworkers):
         val_loader = DataLoader(val, batch_size=bs, shuffle=False, num_workers=nworkers)
         test_loader = DataLoader(test, batch_size=bs, shuffle=False, num_workers=nworkers)
     elif(ds=="EuroSAT"):
+        import ssl
+        ssl._create_default_https_context = ssl._create_unverified_context
         dataset = EuroSAT(root=root,transform=transform_routine,download=True)
         # Splitting the dataset into train val test since EuroSAT doesn't have 
         train_idx, test_idx = train_test_split(list(range(len(dataset))), test_size=0.4, random_state=random_state)
