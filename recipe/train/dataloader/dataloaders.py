@@ -1,5 +1,5 @@
 import torchvision
-from torchvision.datasets import DTD, EuroSAT
+from torchvision.datasets import DTD, EuroSAT, GTSRB
 import argparse
 import os
 from torchvision import transforms
@@ -23,10 +23,6 @@ def get_dataloader(ds,root,bs,nworkers):
         train = DTD(root=root,split="train",transform=transform_routine,download=True)
         val = DTD(root=root,split="val",transform=transform_routine,download=True)
         test = DTD(root=root,split="test",transform=transform_routine,download=True)
-        
-        train_loader = DataLoader(train, batch_size=bs, shuffle=True, num_workers=nworkers)
-        val_loader = DataLoader(val, batch_size=bs, shuffle=False, num_workers=nworkers)
-        test_loader = DataLoader(test, batch_size=bs, shuffle=False, num_workers=nworkers)
     elif(ds=="EuroSAT"):
         import ssl
         ssl._create_default_https_context = ssl._create_unverified_context
@@ -37,9 +33,13 @@ def get_dataloader(ds,root,bs,nworkers):
         train = Subset(dataset, train_idx)
         val = Subset(dataset, val_idx)
         test = Subset(dataset, test_idx)
-        train_loader = DataLoader(train, batch_size=bs, shuffle=True, num_workers=nworkers)
-        val_loader = DataLoader(val, batch_size=bs, shuffle=False, num_workers=nworkers)
-        test_loader = DataLoader(test, batch_size=bs, shuffle=False, num_workers=nworkers)
+    elif(ds=="GTSRB"):
+        train = GTSRB(root=root,split = "train",transform=transform_routine,download=True)
+        dataset = GTSRB(root=root,split = "test",transform=transform_routine,download=True)
+        # Splitting the dataset into train val test since GTSRB doesn't have val set
+        val_idx, test_idx = train_test_split(list(range(len(dataset))), test_size=0.5, random_state=random_state)
+        val = Subset(dataset, val_idx)
+        test = Subset(dataset, test_idx)
     elif(ds=="iWildCam"):
         dataset = get_dataset(dataset="iwildcam", root_dir=root, download=True)
         train_data = dataset.get_subset("train", transform=transform_routine)
@@ -47,8 +47,12 @@ def get_dataloader(ds,root,bs,nworkers):
         test_data = dataset.get_subset("test", transform=transform_routine)
         test_loader = get_eval_loader("standard", test_data, batch_size=bs, num_workers=nworkers)
         val_loader = None
+        return train_loader,val_loader,test_loader
     else:
         raise Exception(f"Unrecognized dataset provided to get_dataloader: {ds}, check spelling or implement get_numclass if working with new dataset")
+    train_loader = DataLoader(train, batch_size=bs, shuffle=True, num_workers=nworkers)
+    val_loader = DataLoader(val, batch_size=bs, shuffle=False, num_workers=nworkers)
+    test_loader = DataLoader(test, batch_size=bs, shuffle=False, num_workers=nworkers)
     return train_loader,val_loader,test_loader
 
 def get_numclass(ds):
@@ -58,5 +62,7 @@ def get_numclass(ds):
         return 10
     elif(ds=="iWildCam"):
         return 182
+    elif(ds=="GTSRB"):
+        return 43
     else:
         raise Exception(f"Unrecognized dataset provided to get_numclass :{ds}, check spelling or implement get_numclass if working with new dataset")

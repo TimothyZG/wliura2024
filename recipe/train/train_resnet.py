@@ -9,7 +9,7 @@ import argparse
 from dataloader.dataloaders import get_dataloader, get_numclass
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--data_root", default = "./Data", help="Directory to which dataset should be downloaded", type=str)
+parser.add_argument("-r","--data_root", default = "./Data", help="Directory to which dataset should be downloaded", type=str)
 parser.add_argument("--model_root", default = "./Models", help="Directory to which models should be saved", type=str)
 parser.add_argument("-d","--dataset", required = True, help="desired dataset", type=str, 
                     choices=["Cars","DTD","MNIST","iWildCam","GTSRB","EuroSAT","Resisc45","SUN397"])
