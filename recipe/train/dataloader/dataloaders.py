@@ -1,5 +1,5 @@
 import torchvision
-from torchvision.datasets import DTD, EuroSAT, GTSRB
+from torchvision.datasets import DTD, EuroSAT, GTSRB, SUN397
 import argparse
 import os
 from torchvision import transforms
@@ -48,6 +48,14 @@ def get_dataloader(ds,root,bs,nworkers):
         test_loader = get_eval_loader("standard", test_data, batch_size=bs, num_workers=nworkers)
         val_loader = None
         return train_loader,val_loader,test_loader
+    elif(ds=="SUN397"):
+        dataset = SUN397(root=root,transform=transform_routine,download=True)
+        # Splitting the dataset into train val test since EuroSAT doesn't have 
+        train_idx, test_idx = train_test_split(list(range(len(dataset))), test_size=0.4, random_state=random_state)
+        val_idx, test_idx = train_test_split(test_idx, test_size=0.5, random_state=random_state)
+        train = Subset(dataset, train_idx)
+        val = Subset(dataset, val_idx)
+        test = Subset(dataset, test_idx)
     else:
         raise Exception(f"Unrecognized dataset provided to get_dataloader: {ds}, check spelling or implement get_numclass if working with new dataset")
     train_loader = DataLoader(train, batch_size=bs, shuffle=True, num_workers=nworkers)
@@ -64,5 +72,7 @@ def get_numclass(ds):
         return 182
     elif(ds=="GTSRB"):
         return 43
+    elif(ds=="SUN397"):
+        return 397
     else:
         raise Exception(f"Unrecognized dataset provided to get_numclass :{ds}, check spelling or implement get_numclass if working with new dataset")
