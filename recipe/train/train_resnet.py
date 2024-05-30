@@ -2,6 +2,7 @@ import torch
 import torchvision.models as models
 import torch.optim as optim
 import torch.nn as nn
+from torch.optim.lr_scheduler import ExponentialLR
 import wandb
 import os
 import argparse
@@ -82,7 +83,7 @@ if(opt=="ADAM"):
     optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
 elif(opt=="SGD"):
     optimizer = optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
-
+scheduler = ExponentialLR(optimizer, gamma=0.9)
 # =========== Define Optimizer =============
 loss_function = nn.CrossEntropyLoss()
 
@@ -95,7 +96,12 @@ print(f"model is moved to {device}")
 for epoch in range(num_epochs):
     total = 0
     correct = 0
-    for batch_idx, (data, targets) in enumerate(train_dataloader):
+    for batch_idx, labeled_batch in enumerate(train_dataloader):
+        # Unpack Batch for iwildcam is slightly different since there's extra metadata
+        if (dataset=="iWildCam"):
+            data, targets, metadata = labeled_batch
+        else: 
+            data, targets = labeled_batch
         data, targets = data.to(device), targets.to(device)
         # Zero the gradients
         optimizer.zero_grad()
@@ -120,6 +126,8 @@ for epoch in range(num_epochs):
     # Print training progress
     print(f"Epoch {epoch+1}/{num_epochs} Completed |\
         Loss: {loss.item():.4f} | Accuracy: {accuracy:.2f}%")
+    if (epoch+1) % 10 == 0:
+        scheduler.step()
     
 
 # ============= EVAL ROUTINE ==============
