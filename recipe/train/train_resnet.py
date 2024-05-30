@@ -21,9 +21,11 @@ parser.add_argument("--log_interval", default=100, type=int)
 parser.add_argument("--lr", default=0.0005, type=float)
 parser.add_argument("-wd","--weight_decay", default=0.0, type=float)
 parser.add_argument("-o","--optimizer", default="ADAM", type=str, choices = ["ADAM", "SGD"])
+parser.add_argument("-g","--gamma_for_lr_scheduler", default = 0.95, type=int)
 parser.add_argument("-mom","--momentum", default=0.9, type=float, help="momentum is only used when we use SGD as optimizer")
 parser.add_argument("-m","--model_name", required = True, choices = ["Resnet18", "Resnet50", "Resnet101"],type=str)
 parser.add_argument("-pn","--wandb_project_name", required = True, type=str)
+
 
 args = parser.parse_args()
 
@@ -38,6 +40,7 @@ model_name = args.model_name
 model_root = args.model_root
 weight_decay = args.weight_decay
 opt = args.optimizer
+gamma = args.gamma_for_lr_scheduler
 momentum = args.momentum
 model_path = model_root+"/"+model_name+"-"+dataset+"-"+opt+".pth"
 
@@ -83,7 +86,7 @@ if(opt=="ADAM"):
     optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
 elif(opt=="SGD"):
     optimizer = optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
-scheduler = ExponentialLR(optimizer, gamma=0.9)
+scheduler = ExponentialLR(optimizer, gamma=gamma)
 # =========== Define Optimizer =============
 loss_function = nn.CrossEntropyLoss()
 
@@ -126,8 +129,8 @@ for epoch in range(num_epochs):
     # Print training progress
     print(f"Epoch {epoch+1}/{num_epochs} Completed |\
         Loss: {loss.item():.4f} | Accuracy: {accuracy:.2f}%")
-    if (epoch+1) % 10 == 0:
-        scheduler.step()
+    # exp lr scheduler step
+    scheduler.step()
     
 
 # ============= EVAL ROUTINE ==============
@@ -140,7 +143,11 @@ total_samples = 0
 
 # Disable gradient computation for evaluation
 with torch.no_grad():
-    for data, targets in test_dataloader:
+    for batch_idx, labeled_batch in enumerate(test_dataloader):
+        if (dataset=="iWildCam"):
+            data, targets, metadata = labeled_batch
+        else: 
+            data, targets = labeled_batch
         # Move data to the appropriate device
         data, targets = data.to(device), targets.to(device)
         # Forward pass
