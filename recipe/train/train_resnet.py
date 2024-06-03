@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-r","--data_root", default = "./Data", help="Directory to which dataset should be downloaded", type=str)
 parser.add_argument("--model_root", default = "./Models", help="Directory to which models should be saved", type=str)
 parser.add_argument("-d","--dataset", required = True, help="desired dataset", type=str, 
-                    choices=["Cars","DTD","MNIST","iWildCam","GTSRB","EuroSAT","Resisc45","SUN397"])
+                    choices=["Cars","DTD","MNIST","iWildCam","GTSRB","EuroSAT","Resisc45","SUN397","SVHN"])
 parser.add_argument("-n","--num_workers", default=1, help="number of workers needed", type=int)
 parser.add_argument("--batch_size", default=32, help="Specift batch size for dataloaders", type=int)
 parser.add_argument("-e","--num_epochs", default=80, type=int)
