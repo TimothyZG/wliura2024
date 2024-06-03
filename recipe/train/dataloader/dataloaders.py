@@ -1,5 +1,5 @@
 import torchvision
-from torchvision.datasets import DTD, EuroSAT, GTSRB, SUN397
+from torchvision.datasets import DTD, EuroSAT, GTSRB, SUN397, SVHN, MNIST
 import argparse
 import os
 from torchvision import transforms
@@ -33,9 +33,16 @@ def get_dataloader(ds,root,bs,nworkers):
         train = Subset(dataset, train_idx)
         val = Subset(dataset, val_idx)
         test = Subset(dataset, test_idx)
-    elif(ds=="GTSRB"):
-        train = GTSRB(root=root,split = "train",transform=transform_routine,download=True)
-        dataset = GTSRB(root=root,split = "test",transform=transform_routine,download=True)
+    elif(ds=="GTSRB" or ds=="SVHN" or ds=="MNIST"):
+        if(ds=="GTSRB"):
+            train = GTSRB(root=root,split = "train",transform=transform_routine,download=True)
+            dataset = GTSRB(root=root,split = "test",transform=transform_routine,download=True)
+        elif(ds=="SVHN"):
+            train = SVHN(root=root,split = "train",transform=transform_routine,download=True)
+            dataset = SVHN(root=root,split = "test",transform=transform_routine,download=True)
+        elif(ds=="MNIST"):
+            train = MNIST(root=root,train=True, transform=transform_routine,download=True)
+            dataset = MNIST(root=root,train=False, transform=transform_routine,download=True)
         # Splitting the dataset into train val test since GTSRB doesn't have val set
         val_idx, test_idx = train_test_split(list(range(len(dataset))), test_size=0.5, random_state=random_state)
         val = Subset(dataset, val_idx)
@@ -74,5 +81,9 @@ def get_numclass(ds):
         return 43
     elif(ds=="SUN397"):
         return 397
+    elif(ds=="SVHN"):
+        return 10
+    elif(ds=="MNIST"):
+        return 10
     else:
         raise Exception(f"Unrecognized dataset provided to get_numclass :{ds}, check spelling or implement get_numclass if working with new dataset")
