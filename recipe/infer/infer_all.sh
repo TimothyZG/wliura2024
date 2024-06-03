@@ -12,9 +12,9 @@ module purge
 module load python/3.10 scipy-stack
 source ~/py310/bin/activate
 
-python recipe/infer/infer_resnet.py -d DTD -a Resnet18 -n 4 -m Models/Resnet18-DTD-ADAM.pth #  -p Pred/pred_res18.csv -t Pred/target_dtd.csv
-python recipe/infer/infer_resnet.py -d DTD -a Resnet50 -n 4 -m Models/Resnet50-DTD-ADAM.pth # -p Pred/pred_res50.csv -t Pred/target_dtd.csv
-python recipe/infer/infer_resnet.py -d DTD -a Resnet101 -n 4 -m Models/Resnet101-DTD-ADAM.pth # -p Pred/pred_res101.csv -t Pred/target_dtd.csv
+python recipe/infer/infer_resnet.py -d DTD -a Resnet18 -n 4 -m Models/Resnet18-DTD-SGD.pth #  -p Pred/pred_res18.csv -t Pred/target_dtd.csv
+python recipe/infer/infer_resnet.py -d DTD -a Resnet50 -n 4 -m Models/Resnet50-DTD-SGD.pth # -p Pred/pred_res50.csv -t Pred/target_dtd.csv
+python recipe/infer/infer_resnet.py -d DTD -a Resnet101 -n 4 -m Models/Resnet101-DTD-SGD.pth # -p Pred/pred_res101.csv -t Pred/target_dtd.csv
 
 python recipe/infer/infer_resnet.py -d EuroSAT -a Resnet18 -n 4 -m Models/Resnet18-EuroSAT-ADAM.pth # -p Pred/pred_eurosat_res18.csv -t Pred/target_dtd.csv
 python recipe/infer/infer_resnet.py -d EuroSAT -a Resnet50 -n 4 -m Models/Resnet50-EuroSAT-ADAM.pth # -p Pred/pred_eurosat_res50.csv -t Pred/target_dtd.csv
