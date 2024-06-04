@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:v100l:1
 #SBATCH --ntasks-per-node=4
-#SBATCH --time=01:00:00
+#SBATCH --time=06:00:00
 #SBATCH --mail-user=<tiange.zhou@outlook.com>
 #SBATCH --mail-type=ALL
 #SBATCH --output=recipe/infer/output/slurm-%j.out
@@ -23,3 +23,15 @@ python recipe/infer/infer_resnet.py -d EuroSAT -a Resnet101 -n 4 -m Models/Resne
 python recipe/infer/infer_resnet.py -d GTSRB -a Resnet18 -n 4 -m Models/Resnet18-GTSRB-ADAM.pth
 python recipe/infer/infer_resnet.py -d GTSRB -a Resnet50 -n 4 -m Models/Resnet50-GTSRB-ADAM.pth
 python recipe/infer/infer_resnet.py -d GTSRB -a Resnet101 -n 4 -m Models/Resnet101-GTSRB-ADAM.pth
+
+python recipe/infer/infer_resnet.py -d MNIST -a Resnet18 -n 4 -m Models/Resnet18-MNIST-ADAM.pth -r $SLURM_TMPDIR/data
+python recipe/infer/infer_resnet.py -d MNIST -a Resnet50 -n 4 -m Models/Resnet50-MNIST-ADAM.pth -r $SLURM_TMPDIR/data
+python recipe/infer/infer_resnet.py -d MNIST -a Resnet101 -n 4 -m Models/Resnet101-MNIST-ADAM.pth -r $SLURM_TMPDIR/data
+
+python recipe/infer/infer_resnet.py -d SVHN -a Resnet18 -n 4 -m Models/Resnet18-SVHN-ADAM.pth -r $SLURM_TMPDIR/data
+python recipe/infer/infer_resnet.py -d SVHN -a Resnet50 -n 4 -m Models/Resnet50-SVHN-ADAM.pth -r $SLURM_TMPDIR/data
+python recipe/infer/infer_resnet.py -d SVHN -a Resnet101 -n 4 -m Models/Resnet101-SVHN-ADAM.pth -r $SLURM_TMPDIR/data
+
+python recipe/infer/infer_resnet.py -d iWildCam -a Resnet18 -n 4 -m Models/Resnet18-iWildCam-ADAM.pth -r $SLURM_TMPDIR/data
+python recipe/infer/infer_resnet.py -d iWildCam -a Resnet50 -n 4 -m Models/Resnet50-iWildCam-ADAM.pth -r $SLURM_TMPDIR/data
+python recipe/infer/infer_resnet.py -d iWildCam -a Resnet101 -n 4 -m Models/Resnet101-iWildCam-ADAM.pth -r $SLURM_TMPDIR/data
