@@ -62,9 +62,9 @@ with torch.no_grad():
 
         # Forward pass
         outputs = model(data)
-        
+
         probs = softmax(outputs, dim=1)
-        
+
         pred_df = pd.concat([pred_df,pd.DataFrame(probs.cpu().numpy(), columns=columns)], ignore_index=True)
         targets_df = pd.concat([targets_df,pd.DataFrame({'target': targets.cpu().numpy()})], ignore_index=True)
 
