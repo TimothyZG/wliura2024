@@ -166,3 +166,4 @@ models/*.pth
 slurm*.out
 */models/*.pth
 data/*
+Analysis/artifacts/*
