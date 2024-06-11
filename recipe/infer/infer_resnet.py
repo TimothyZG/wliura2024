@@ -56,9 +56,11 @@ targets_df = pd.DataFrame(columns=['target'])
 
 # Disable gradient computation for evaluation
 with torch.no_grad():
-    for data, targets in test_dataloader:
-        # Move data to the appropriate device
-        data, targets = data.to(device), targets.to(device)
+    for batch_idx, labeled_batch in enumerate(test_dataloader):
+        if (dataset=="iWildCam"):
+            data, targets, metadata = labeled_batch
+        else: 
+            data, targets = labeled_batch
 
         # Forward pass
         outputs = model(data)
