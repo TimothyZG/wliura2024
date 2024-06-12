@@ -16,7 +16,7 @@ parser.add_argument("-r","--data_root", default = "./Data",
 parser.add_argument("-m", "--model_path", required=True, 
                     help="path to model", type=str)
 parser.add_argument("-d","--dataset", required = True, help="desired dataset", type=str, 
-                    choices=["Cars","DTD","MNIST","iWildCam","GTSRB","EuroSAT","Resisc45","SUN397","SVHN","iWildCamOOD"])
+                    choices=["Cars","DTD","MNIST","iWildCam","GTSRB","EuroSAT","Resisc45","SUN397","SVHN","iWildCamID"])
 parser.add_argument("-n","--num_workers", default=1, help="number of workers needed", type=int)
 parser.add_argument("--batch_size", default=32, help="Specift batch size for dataloaders", type=int)
 parser.add_argument("-a","--model_arch", required = True, choices = ["Resnet18", "Resnet50", "Resnet101"],type=str)
@@ -57,7 +57,7 @@ targets_df = pd.DataFrame(columns=['target'])
 # Disable gradient computation for evaluation
 with torch.no_grad():
     for batch_idx, labeled_batch in enumerate(test_dataloader):
-        if (dataset=="iWildCam"):
+        if (dataset=="iWildCam" or dataset=="iWildCamID"):
             data, targets, metadata = labeled_batch
         else: 
             data, targets = labeled_batch
