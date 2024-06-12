@@ -61,7 +61,8 @@ with torch.no_grad():
             data, targets, metadata = labeled_batch
         else: 
             data, targets = labeled_batch
-
+        # Move data to the appropriate device
+        data, targets = data.to(device), targets.to(device)
         # Forward pass
         outputs = model(data)
 
