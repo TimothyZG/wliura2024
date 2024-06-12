@@ -170,3 +170,4 @@ slurm*.out
 data/*
 Analysis/artifacts/*
 Pred/*
+Analysis/*.csv
