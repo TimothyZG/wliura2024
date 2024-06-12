@@ -171,3 +171,4 @@ data/*
 Analysis/artifacts/*
 Pred/*
 Analysis/*.csv
+Analysis/csv/*.csv
