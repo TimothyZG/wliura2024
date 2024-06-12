@@ -55,6 +55,15 @@ def get_dataloader(ds,root,bs,nworkers):
         test_loader = get_eval_loader("standard", test_data, batch_size=bs, num_workers=nworkers)
         val_loader = None
         return train_loader,val_loader,test_loader
+    elif(ds=="iWildCamOOD"):
+        dataset = get_dataset(dataset="iwildcam", root_dir=root, download=True)
+        train_data = dataset.get_subset("train", transform=transform_routine)
+        train_loader = get_train_loader("standard", train_data, batch_size=bs, num_workers=nworkers)
+        ood_val_data = dataset.get_subset("val_ood", transform=transform_routine)
+        ood_val_loader = get_eval_loader("standard", ood_val_data, batch_size=bs, num_workers=nworkers)
+        ood_test_data = dataset.get_subset("test_ood", transform=transform_routine)
+        ood_test_loader = get_eval_loader("standard", ood_test_data, batch_size=bs, num_workers=nworkers)
+        return train_loader,ood_val_loader,ood_test_loader
     elif(ds=="SUN397"):
         dataset = SUN397(root=root,transform=transform_routine,download=True)
         # Splitting the dataset into train val test since EuroSAT doesn't have 
@@ -75,7 +84,7 @@ def get_numclass(ds):
         return 47
     elif(ds=="EuroSAT"):
         return 10
-    elif(ds=="iWildCam"):
+    elif(ds=="iWildCam" or ds=="iWildCamOOD"):
         return 182
     elif(ds=="GTSRB"):
         return 43
