@@ -79,6 +79,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+**/.ipynb_checkpoints
 
 # IPython
 profile_default/
@@ -167,3 +168,4 @@ slurm*.out
 */models/*.pth
 data/*
 Analysis/artifacts/*
+Pred/*
