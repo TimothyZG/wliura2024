@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-r","--data_root", default = "./Data", help="Directory to which dataset should be downloaded", type=str)
 parser.add_argument("--model_root", default = "./Models", help="Directory to which models should be saved", type=str)
 parser.add_argument("-d","--dataset", required = True, help="desired dataset", type=str, 
-                    choices=["Cars","DTD","MNIST","iWildCam","GTSRB","EuroSAT","Resisc45","SUN397","SVHN"])
+                    choices=["Cars","DTD","MNIST","iWildCam","GTSRB","EuroSAT","Resisc45","SUN397","SVHN","Caltech256","CIFAR10"])
 parser.add_argument("-n","--num_workers", default=1, help="number of workers needed", type=int)
 parser.add_argument("--batch_size", default=32, help="Specift batch size for dataloaders", type=int)
 parser.add_argument("-e","--num_epochs", default=80, type=int)
@@ -21,7 +21,7 @@ parser.add_argument("--log_interval", default=100, type=int)
 parser.add_argument("--lr", default=0.001, type=float)
 parser.add_argument("-wd","--weight_decay", default=0.0, type=float)
 parser.add_argument("-o","--optimizer", default="ADAM", type=str, choices = ["ADAM", "SGD"])
-parser.add_argument("-g","--gamma_for_lr_scheduler", default = 1, type=float)
+parser.add_argument("-g","--gamma_for_lr_scheduler", default = 0.95, type=float)
 parser.add_argument("-mom","--momentum", default=0.9, type=float, help="momentum is only used when we use SGD as optimizer")
 parser.add_argument("-m","--model_name", required = True, choices = ["Resnet18", "Resnet50", "Resnet101"],type=str)
 parser.add_argument("-pn","--wandb_project_name", required = True, type=str)
@@ -48,6 +48,7 @@ os.makedirs(dataset_root, exist_ok=True)
 os.makedirs(model_root, exist_ok=True)
 num_classes = get_numclass(dataset)
 
+os.environ["WANDB__SERVICE_WAIT"] = "300"
 # start a new wandb run to track this script
 wandb.init(
     # set the wandb project where this run will be logged

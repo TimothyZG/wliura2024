@@ -10,6 +10,6 @@
 module purge
 module load python/3.10 scipy-stack
 source ~/py310/bin/activate
-python recipe/train/train_resnet.py -d SVHN -m Resnet18 -pn SVHN -o ADAM -n 4 -e 30 -g 0.95 -r $SLURM_TMPDIR/data
-python recipe/train/train_resnet.py -d SVHN -m Resnet50 -pn SVHN -o ADAM -n 4 -e 30 -g 0.95 -r $SLURM_TMPDIR/data
-python recipe/train/train_resnet.py -d SVHN -m Resnet101 -pn SVHN -o ADAM -n 4 -e 30 -g 0.95 -r $SLURM_TMPDIR/data
+python recipe/train/train_resnet.py -d SVHN -m Resnet18 -pn SVHN -o ADAM -n 4 -e 30 -g 0.98 -r $SLURM_TMPDIR/data
+python recipe/train/train_resnet.py -d SVHN -m Resnet50 -pn SVHN -o ADAM -n 4 -e 40 -g 0.98 -r $SLURM_TMPDIR/data
+python recipe/train/train_resnet.py -d SVHN -m Resnet101 -pn SVHN -o ADAM -n 4 -e 50 -g 0.98 -r $SLURM_TMPDIR/data

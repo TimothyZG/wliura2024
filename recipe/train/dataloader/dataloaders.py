@@ -1,5 +1,5 @@
 import torchvision
-from torchvision.datasets import DTD, EuroSAT, GTSRB, SUN397, SVHN, MNIST
+from torchvision.datasets import DTD, EuroSAT, GTSRB, SUN397, SVHN, MNIST, Caltech256, CIFAR10
 import argparse
 import os
 from torchvision import transforms
@@ -7,12 +7,16 @@ from torch.utils.data import DataLoader, Subset
 from sklearn.model_selection import train_test_split
 from wilds import get_dataset
 from wilds.common.data_loaders import get_train_loader, get_eval_loader
+from torchvision.transforms import v2
+from pytorch_cinic.dataset import CINIC10
+
+
 
 random_state = 42 # For reproducibility
 
-train_transform_routine = transforms.Compose([
-    transforms.RandomResizedCrop(224),  # Randomly crop and resize to 224x224
-    transforms.RandomHorizontalFlip(),  # Random horizontal flip
+train_transform_routine = v2.Compose([
+    v2.RandomResizedCrop(size=(224, 224), antialias=True),
+    v2.RandomHorizontalFlip(p=0.5),
     transforms.Lambda(lambda x: x.convert('RGB')),  # Convert to three channels
     transforms.ToTensor(),  # Transform to tensor for torch
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standardize
@@ -30,7 +34,11 @@ def get_dataloader(ds,root,bs,nworkers):
         train = DTD(root=root,split="train",transform=train_transform_routine,download=True)
         val = DTD(root=root,split="val",transform=test_transform_routine,download=True)
         test = DTD(root=root,split="test",transform=test_transform_routine,download=True)
-    elif ds == "EuroSAT":
+    elif(ds=="CINIC10"):
+        train = CINIC10(root=root,partition="train", transform=train_transform_routine,download=True)
+        val = CINIC10(root=root,partition="valid",transform=test_transform_routine,download=True)
+        test = CINIC10(root=root,partition="test",transform=test_transform_routine,download=True)
+    elif (ds == "EuroSAT"):
         import ssl
         ssl._create_default_https_context = ssl._create_unverified_context
         dataset = EuroSAT(root=root, transform=test_transform_routine, download=True)
@@ -40,7 +48,7 @@ def get_dataloader(ds,root,bs,nworkers):
         train.dataset.transform = train_transform_routine  # Apply train transforms to the training subset
         val = Subset(dataset, val_idx)
         test = Subset(dataset, test_idx)
-    elif(ds=="GTSRB" or ds=="SVHN" or ds=="MNIST"):
+    elif(ds=="GTSRB" or ds=="SVHN" or ds=="MNIST" or ds=="CIFAR10"):
         if(ds=="GTSRB"):
             train = GTSRB(root=root,split = "train",transform=train_transform_routine,download=True)
             dataset = GTSRB(root=root,split = "test",transform=test_transform_routine,download=True)
@@ -50,7 +58,10 @@ def get_dataloader(ds,root,bs,nworkers):
         elif(ds=="MNIST"):
             train = MNIST(root=root,train=True, transform=train_transform_routine,download=True)
             dataset = MNIST(root=root,train=False, transform=test_transform_routine,download=True)
-        # Splitting the dataset into train val test since GTSRB doesn't have val set
+        elif(ds=="CIFAR10"):
+            train = CIFAR10(root=root,train=True, transform=train_transform_routine,download=True)
+            dataset = CIFAR10(root=root,train=False, transform=test_transform_routine,download=True)
+        # Splitting the dataset into train val test since these datasets don't have default val set
         val_idx, test_idx = train_test_split(list(range(len(dataset))), test_size=0.5, random_state=random_state)
         val = Subset(dataset, val_idx)
         test = Subset(dataset, test_idx)
@@ -79,6 +90,14 @@ def get_dataloader(ds,root,bs,nworkers):
         train.dataset.transform = train_transform_routine  # Apply train transforms to the training subset
         val = Subset(dataset, val_idx)
         test = Subset(dataset, test_idx)
+    elif(ds=="Caltech256"):
+        dataset = Caltech256(root=root, transform=test_transform_routine, download=True)
+        train_idx, test_idx = train_test_split(list(range(len(dataset))), test_size=0.4, random_state=random_state)
+        val_idx, test_idx = train_test_split(test_idx, test_size=0.5, random_state=random_state)
+        train = Subset(dataset, train_idx)
+        train.dataset.transform = train_transform_routine  # Apply train transforms to the training subset
+        val = Subset(dataset, val_idx)
+        test = Subset(dataset, test_idx)
     else:
         raise Exception(f"Unrecognized dataset provided to get_dataloader: {ds}, check spelling or implement get_numclass if working with new dataset")
     train_loader = DataLoader(train, batch_size=bs, shuffle=True, num_workers=nworkers)
@@ -89,7 +108,7 @@ def get_dataloader(ds,root,bs,nworkers):
 def get_numclass(ds):
     if(ds=="DTD"):
         return 47
-    elif(ds=="EuroSAT"):
+    elif(ds=="EuroSAT" or ds=="CIFAR10" or ds=="CINIC10" or ds=="CIFAR10.1"):
         return 10
     elif(ds=="iWildCam" or ds=="iWildCamID"):
         return 182
@@ -101,5 +120,7 @@ def get_numclass(ds):
         return 10
     elif(ds=="MNIST"):
         return 10
+    elif(ds=="Caltech256"):
+        return 257
     else:
         raise Exception(f"Unrecognized dataset provided to get_numclass :{ds}, check spelling or implement get_numclass if working with new dataset")
