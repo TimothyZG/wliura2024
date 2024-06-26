@@ -65,7 +65,7 @@ def get_dataloader(ds,root,bs,nworkers):
         val_idx, test_idx = train_test_split(list(range(len(dataset))), test_size=0.5, random_state=random_state)
         val = Subset(dataset, val_idx)
         test = Subset(dataset, test_idx)
-    elif(ds=="iWildCam"):
+    elif(ds=="iWildCamOOD"):
         dataset = get_dataset(dataset="iwildcam", root_dir=root, download=True)
         train_data = dataset.get_subset("train", transform=train_transform_routine)
         train_loader = get_train_loader("standard", train_data, batch_size=bs, num_workers=nworkers)
@@ -73,7 +73,7 @@ def get_dataloader(ds,root,bs,nworkers):
         test_loader = get_eval_loader("standard", test_data, batch_size=bs, num_workers=nworkers)
         val_loader = None
         return train_loader,val_loader,test_loader
-    elif(ds=="iWildCamID"):
+    elif(ds=="iWildCam"):
         dataset = get_dataset(dataset="iwildcam", root_dir=root, download=True)
         train_data = dataset.get_subset("train", transform=train_transform_routine)
         train_loader = get_train_loader("standard", train_data, batch_size=bs, num_workers=nworkers)
@@ -110,7 +110,7 @@ def get_numclass(ds):
         return 47
     elif(ds=="EuroSAT" or ds=="CIFAR10" or ds=="CINIC10" or ds=="CIFAR10.1"):
         return 10
-    elif(ds=="iWildCam" or ds=="iWildCamID"):
+    elif(ds=="iWildCam" or ds=="iWildCamOOD"):
         return 182
     elif(ds=="GTSRB"):
         return 43
