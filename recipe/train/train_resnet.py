@@ -6,6 +6,7 @@ from torch.optim.lr_scheduler import ExponentialLR, StepLR
 import wandb
 import os
 import argparse
+from torch.nn import DataParallel
 
 from dataloader.dataloaders import get_dataloader, get_numclass
 
@@ -116,6 +117,7 @@ loss_function = nn.CrossEntropyLoss()
 
 # ========== Fully Fine-Tune Model =========== 
 model.train()
+model = nn.DataParallel(model)
 model = model.to(device)
 print(f"model is moved to {device}")
 
@@ -124,19 +126,19 @@ max_acc = 0
 for epoch in range(num_epochs):
     # =========== Layer by Layer Unfreezing =========
     if(epoch == ss):
-        for param in model.layer4.parameters():
+        for param in model.module.layer4.parameters():
             param.requires_grad = True
         curr_lr = lr*0.2
         optimizer = get_optimizer(model,curr_lr)
         print("unfreezing layer 4")
     if(epoch == 2*ss):
-        for param in model.layer3.parameters():
+        for param in model.module.layer3.parameters():
             param.requires_grad = True
         curr_lr = lr*0.1
         optimizer = get_optimizer(model,curr_lr)
         print("unfreezing layer 3")
     if(epoch == 3*ss):
-        for param in model.layer2.parameters():
+        for param in model.module.layer2.parameters():
             param.requires_grad = True
         urr_lr = lr*0.05
         optimizer = get_optimizer(model,curr_lr)
