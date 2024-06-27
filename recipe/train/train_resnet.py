@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-r","--data_root", default = "./Data", help="Directory to which dataset should be downloaded", type=str)
 parser.add_argument("--model_root", default = "./Models", help="Directory to which models should be saved", type=str)
 parser.add_argument("-d","--dataset", required = True, help="desired dataset", type=str, 
-                    choices=["Cars","DTD","MNIST","iWildCam","GTSRB","EuroSAT","Resisc45","SUN397","SVHN","Caltech256","CIFAR10"])
+                    choices=["Cars","DTD","MNIST","iWildCam","GTSRB","EuroSAT","Resisc45","SUN397","SVHN","Caltech256","CIFAR10","fmow","rxrx1"])
 parser.add_argument("-n","--num_workers", default=1, help="number of workers needed", type=int)
 parser.add_argument("--batch_size", default=32, help="Specift batch size for dataloaders", type=int)
 parser.add_argument("-e","--num_epochs", default=80, type=int)
@@ -72,7 +72,7 @@ wandb.init(
     }
 )
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"current device is {device}")
 
 # ========== Load Data =========== 
@@ -154,7 +154,7 @@ for epoch in range(num_epochs):
     correct = 0
     for batch_idx, labeled_batch in enumerate(train_dataloader):
         # Unpack Batch for iwildcam is slightly different since there's extra metadata
-        if (dataset=="iWildCam"):
+        if (dataset=="iWildCam" or dataset=="rxrx1" or dataset=="fmow"):
             data, targets, metadata = labeled_batch
         else: 
             data, targets = labeled_batch
@@ -195,7 +195,7 @@ for epoch in range(num_epochs):
     # Disable gradient computation for evaluation
     with torch.no_grad():
         for batch_idx, labeled_batch in enumerate(val_dataloader):
-            if (dataset=="iWildCam"):
+            if (dataset=="iWildCam" or dataset=="rxrx1" or dataset=="fmow"):
                 data, targets, metadata = labeled_batch
             else: 
                 data, targets = labeled_batch
