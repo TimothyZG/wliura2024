@@ -31,6 +31,7 @@ model_path = args.model_path
 model_arch = args.model_arch
 bs = args.batch_size
 pred_path = "Pred/"+dataset+"_"+model_arch+".csv"
+pred_cal_path = "Pred/cal_"+dataset+"_"+model_arch+".csv"
 target_path = "Pred/"+"target_"+dataset+".csv"
 num_class = get_numclass(dataset)
 
@@ -44,7 +45,19 @@ elif model_arch=="Resnet101":
     model = models.resnet101(weights=None)
     model.fc = nn.Linear(model.fc.in_features, num_class)
 
-model.load_state_dict(torch.load(model_path))
+# Load the state dictionary
+state_dict = torch.load(model_path)
+
+# Remove 'module.' prefix if present
+from collections import OrderedDict
+new_state_dict = OrderedDict()
+for k, v in state_dict.items():
+    name = k[7:] if k.startswith('module.') else k
+    new_state_dict[name] = v
+
+model.load_state_dict(new_state_dict)
+
+# model.load_state_dict(torch.load(model_path))
 model.eval()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = model.to(device)
@@ -57,7 +70,7 @@ targets_df = pd.DataFrame(columns=['target'])
 # Disable gradient computation for evaluation
 with torch.no_grad():
     for batch_idx, labeled_batch in enumerate(test_dataloader):
-        if (dataset=="iWildCam" or dataset=="iWildCamID"):
+        if (dataset=="iWildCam" or dataset=="iWildCamOOD"):
             data, targets, metadata = labeled_batch
         else: 
             data, targets = labeled_batch
@@ -74,3 +87,32 @@ with torch.no_grad():
 pred_df.to_csv(pred_path, index=False)
 targets_df.to_csv(target_path, index=False)
 print("Predictions successfully saved to CSV files.")
+
+pred_df_cal = pd.DataFrame(columns=columns)
+# ======== Temperature Scaling ========
+from infer.temperature_scaling import ModelWithTemperature
+model_calibrated = ModelWithTemperature(model)
+
+# Tune the model temperature, and save the results
+if (dataset=="iWildCam" or dataset=="iWildCamOOD"):
+    model_calibrated.set_temperature(val_dataloader,iwildcam=True)
+else:
+    model_calibrated.set_temperature(val_dataloader)
+# Disable gradient computation for evaluation
+with torch.no_grad():
+    for batch_idx, labeled_batch in enumerate(test_dataloader):
+        if (dataset=="iWildCam" or dataset=="iWildCamOOD"):
+            data, targets, metadata = labeled_batch
+        else: 
+            data, targets = labeled_batch
+        # Move data to the appropriate device
+        data, targets = data.to(device), targets.to(device)
+        # Forward pass
+        outputs = model_calibrated(data)
+
+        probs = softmax(outputs/model_calibrated.temperature, dim=1)
+
+        pred_df_cal = pd.concat([pred_df_cal,pd.DataFrame(probs.cpu().numpy(), columns=columns)], ignore_index=True)
+
+pred_df_cal.to_csv(pred_cal_path, index=False)
+print("Calibrated Predictions successfully saved to CSV files.")
