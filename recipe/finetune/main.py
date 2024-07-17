@@ -2,11 +2,12 @@ import torch
 import torchvision.models as models
 import torch.optim as optim
 import torch.nn as nn
-from torch.optim.lr_scheduler import CosineAnnealingLR
+from torch.optim.lr_scheduler import CosineAnnealingLR, CosineAnnealingWarmRestarts
 import wandb
 import os
 import argparse
 import sys
+import pandas as pd
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataloader.dataloaders import get_dataloader, get_numclass
 
@@ -32,7 +33,7 @@ def parse_arguments():
         required = True, 
         help="desired dataset", 
         type=str, 
-        choices=["iWildCam","EuroSAT","SUN397","Caltech256","CIFAR10"])
+        choices=["iWildCam","EuroSAT","SUN397","Caltech256","CIFAR10","DTD", "MNIST"])
     parser.add_argument(
         "-e",
         "--num_epochs",
@@ -84,11 +85,60 @@ def parse_arguments():
     parser.add_argument("-pn","--wandb_project_name", required = True, type=str)
     return parser.parse_args()
 
+def make_predictions(pred_path, pred_cal_path, target_path):
+    columns = [f'class_{i}' for i in range(num_classes)]
+    pred_df = pd.DataFrame(columns=columns)
+    targets_df = pd.DataFrame(columns=['target'])
+    with torch.no_grad():
+        for batch_idx, labeled_batch in enumerate(test_dataloader):
+            if (args.dataset=="iWildCam" or args.dataset=="iWildCamOOD"):
+                data, targets, metadata = labeled_batch
+            else: 
+                data, targets = labeled_batch
+            data, targets = data.to(device), targets.to(device)
+            outputs = model(data)
+            pred_df = pd.concat([pred_df,pd.DataFrame(outputs.cpu().numpy(), columns=columns)], ignore_index=True)
+            targets_df = pd.concat([targets_df,pd.DataFrame({'target': targets.cpu().numpy()})], ignore_index=True)
+
+    pred_df.to_csv(pred_path, index=False)
+    targets_df.to_csv(target_path, index=False)
+    print("Predictions successfully saved to CSV files.")
+
+    pred_df_cal = pd.DataFrame(columns=columns)
+    # ======== Temperature Scaling ========
+    from infer.temperature_scaling import ModelWithTemperature
+    model_calibrated = ModelWithTemperature(model)
+
+    # Tune the model temperature, and save the results
+    if (args.dataset=="iWildCam" or args.dataset=="iWildCamOOD"):
+        model_calibrated.set_temperature(val_dataloader,iwildcam=True)
+    else:
+        model_calibrated.set_temperature(val_dataloader)
+    # Disable gradient computation for evaluation
+    with torch.no_grad():
+        for batch_idx, labeled_batch in enumerate(test_dataloader):
+            if (args.dataset=="iWildCam" or args.dataset=="iWildCamOOD"):
+                data, targets, metadata = labeled_batch
+            else: 
+                data, targets = labeled_batch
+            # Move data to the appropriate device
+            data, targets = data.to(device), targets.to(device)
+            # Forward pass
+            outputs = model_calibrated(data)
+
+            # probs = softmax(outputs/model_calibrated.temperature, dim=1)
+
+            pred_df_cal = pd.concat([pred_df_cal,pd.DataFrame(outputs.cpu().numpy(), columns=columns)], ignore_index=True)
+
+    pred_df_cal.to_csv(pred_cal_path, index=False)
+    print("Calibrated Predictions successfully saved to CSV files.")
+    
 if __name__ == '__main__':
     args = parse_arguments()
     print(args)
     DEVICE = 'cuda'
     model_path = args.model_root+"/"+args.model_name+"-"+args.dataset+".pth"
+    pft_model_path = args.model_root+"/"+args.model_name+"-"+args.dataset+"-pft"+".pth"
     os.makedirs(args.dataset_root, exist_ok=True)
     os.makedirs(args.model_root, exist_ok=True)
     num_classes = get_numclass(args.dataset)
@@ -115,7 +165,7 @@ if __name__ == '__main__':
     # ========== Get Pretrained Model =========== 
     if(args.model_name=="Resnet18"):
         model = models.resnet18(weights='IMAGENET1K_V1')
-    elif(args.model_name=="ffNetResnet50"):
+    elif(args.model_name=="Resnet50"):
         model = models.resnet50(weights='IMAGENET1K_V2')
     elif(args.model_name=="Resnet101"):
         model = models.resnet101(weights='IMAGENET1K_V2')
@@ -148,6 +198,12 @@ if __name__ == '__main__':
         model.fc = nn.Linear(num_features, num_classes)
     else:
         raise Exception(f"Unrecgonized Model Architecture given: {args.model_name}")
+    
+    pred_path_lp = "lp-ft/"+args.dataset+"_"+args.model_name+"_lp.csv"
+    pred_cal_path_lp = "lp-ft/cal_"+args.dataset+"_"+args.model_name+"_lp.csv"
+    pred_path_ft = "lp-ft/"+args.dataset+"_"+args.model_name+"_ft.csv"
+    pred_cal_path_ft = "lp-ft/cal_"+args.dataset+"_"+args.model_name+"_ft.csv"
+    target_path = "lp-ft/"+"target_"+args.dataset+".csv"
     # =========== Define Optimizer =============
     curr_lr = args.lr
     optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr, weight_decay=args.weight_decay)
@@ -167,12 +223,22 @@ if __name__ == '__main__':
     for epoch in range(args.num_epochs):
         # =========== Layer by Layer Unfreezing =========
         if(epoch == args.num_epochs_linear):
+            torch.save(model.state_dict(), model_path)
+            print(f"partially finetuined model saved to {pft_model_path}")
+            make_predictions(pred_path_lp, pred_cal_path_lp, target_path)
             for param in model.parameters():
                 param.requires_grad = True
+            # curr_lr = 1e-5
+            curr_lr = 1e-4
+            optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=curr_lr, weight_decay=args.weight_decay)
+            scheduler = CosineAnnealingLR(optimizer, T_max=args.num_epochs - epoch)  # Adjust T_max to remaining epochs
+            # scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=args.num_epochs - epoch)
+            print("unfreezing entire Model, decreasing lr to 1e-4")
+        if(epoch == args.num_epochs-10):
             curr_lr = 1e-5
             optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=curr_lr, weight_decay=args.weight_decay)
             scheduler = CosineAnnealingLR(optimizer, T_max=args.num_epochs - epoch)  # Adjust T_max to remaining epochs
-            print("unfreezing entire Model")
+            print("decreasing lr to 1e-5")
         total = 0
         correct = 0
         for batch_idx, labeled_batch in enumerate(train_dataloader):
@@ -235,15 +301,16 @@ if __name__ == '__main__':
         wandb.log({"epoch": epoch, "val_accuracy": val_accuracy, "val_loss":val_loss})
 
         # ========== Save Model =============
-        if (val_accuracy > max_acc-acc_threshold and val_loss < min_loss):
+        # if (val_accuracy > max_acc-acc_threshold and val_loss < min_loss):
+        if (val_accuracy > max_acc):
             torch.save(model.state_dict(), model_path)
             print(f"Best Model Updated (val_accuracy = {val_accuracy})")
             max_acc = val_accuracy
-            min_loss = val_loss
+            # min_loss = val_loss
             
         # Print training progress
-        print(f"Epoch {epoch+1}/{args.num_epochs} Completed | Loss: {loss.item():.4f} | Accuracy: {train_accuracy:.2f}% | Val Accuracy: {val_accuracy:.2f} | LR: {curr_lr}")
-        
+        curr_lr = scheduler.get_last_lr()
+        print(f"Epoch {epoch+1}/{args.num_epochs} Completed | Loss: {loss.item():.4f} | Accuracy: {train_accuracy:.2f}% | Val Accuracy: {val_accuracy:.2f} | Val Loss: {val_loss:.2f}| LR: {curr_lr}")
         model.train()
         scheduler.step()
-    
+    make_predictions(pred_path_ft, pred_cal_path_ft, target_path)

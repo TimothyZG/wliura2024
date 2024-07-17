@@ -12,6 +12,14 @@ module purge
 module load python/3.10 scipy-stack
 source ~/py310/bin/activate
 
-python recipe/infer/infer_resnet.py -d Caltech256 -a Resnet18 -n 4 -m Models/Resnet18-Caltech256-ADAM.pth -r $SLURM_TMPDIR/data
-python recipe/infer/infer_resnet.py -d Caltech256 -a Resnet50 -n 4 -m Models/Resnet50-Caltech256-ADAM.pth -r $SLURM_TMPDIR/data
-python recipe/infer/infer_resnet.py -d Caltech256 -a Resnet101 -n 4 -m Models/Resnet101-Caltech256-ADAM.pth -r $SLURM_TMPDIR/data
+python recipe/infer/infer_resnet.py -d Caltech256 -a Resnet18 -n 4 -m Models/Resnet18-Caltech256.pth -r $SLURM_TMPDIR/data
+python recipe/infer/infer_resnet.py -d Caltech256 -a Resnet50 -n 4 -m Models/Resnet50-Caltech256.pth -r $SLURM_TMPDIR/data
+python recipe/infer/infer_resnet.py -d Caltech256 -a Resnet101 -n 4 -m Models/Resnet101-Caltech256.pth -r $SLURM_TMPDIR/data
+
+python recipe/infer/infer_resnet.py -d Caltech256 -a EffNet_S -n 4 -m Models/EffNet_S-Caltech256.pth -r $SLURM_TMPDIR/data
+python recipe/infer/infer_resnet.py -d Caltech256 -a EffNet_M -n 4 -m Models/EffNet_M-Caltech256.pth -r $SLURM_TMPDIR/data
+python recipe/infer/infer_resnet.py -d Caltech256 -a EffNet_L -n 4 -m Models/EffNet_L-Caltech256.pth -r $SLURM_TMPDIR/data
+
+# python recipe/infer/infer_resnet.py -d Caltech256 -a ViT_B_16 -n 4 -m Models/ViT_B_16-Caltech256.pth -r $SLURM_TMPDIR/data -rs 384
+# python recipe/infer/infer_resnet.py -d Caltech256 -a ViT_L_16 -n 4 -m Models/ViT_L_16-Caltech256.pth -r $SLURM_TMPDIR/data -rs 512
+# python recipe/infer/infer_resnet.py -d Caltech256 -a ViT_L_16 -n 4 -m Models/ViT_L_16-Caltech256.pth -r $SLURM_TMPDIR/data -rs 518
