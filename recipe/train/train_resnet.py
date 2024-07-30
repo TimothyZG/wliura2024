@@ -6,7 +6,6 @@ from torch.optim.lr_scheduler import ExponentialLR, StepLR
 import wandb
 import os
 import argparse
-from torch.nn import DataParallel
 
 from dataloader.dataloaders import get_dataloader, get_numclass
 
@@ -112,7 +111,7 @@ elif(lrs == "EXP"):
     print(f"Using {lrs} LR-Scheduler with {gamma=}")
     scheduler = ExponentialLR(optimizer, gamma=gamma)
     
-# =========== Define Optimizer =============
+# =========== Define Loss Function =============
 loss_function = nn.CrossEntropyLoss()
 
 # ========== Fully Fine-Tune Model =========== 
@@ -122,6 +121,8 @@ model = model.to(device)
 print(f"model is moved to {device}")
 
 max_acc = 0
+acc_threshold = 0.05
+min_loss = 10
 # ========== Training Routine ============
 for epoch in range(num_epochs):
     # =========== Layer by Layer Unfreezing =========
@@ -203,6 +204,7 @@ for epoch in range(num_epochs):
             data, targets = data.to(device), targets.to(device)
             # Forward pass
             outputs = model(data)
+            val_loss = loss_function(outputs, targets)
             # Get predictions
             _, predicted = torch.max(outputs, 1)
             # Update performance metrics
@@ -213,13 +215,14 @@ for epoch in range(num_epochs):
     val_accuracy = total_correct / total_samples
     
     # Log val_accuracy to wandb
-    wandb.log({"epoch": epoch, "val_accuracy": val_accuracy})
+    wandb.log({"epoch": epoch, "val_accuracy": val_accuracy, "val_loss":val_loss})
 
     # ========== Save Model =============
-    if (val_accuracy > max_acc):
+    if (val_accuracy > max_acc-acc_threshold and val_loss < min_loss):
         torch.save(model.state_dict(), model_path)
         print(f"Best Model Updated (val_accuracy = {val_accuracy})")
         max_acc = val_accuracy
+        min_loss = val_loss
         
     # Print training progress
     print(f"Epoch {epoch+1}/{num_epochs} Completed | Loss: {loss.item():.4f} | Accuracy: {train_accuracy:.2f}% | Val Accuracy: {val_accuracy:.2f} | LR: {curr_lr}")

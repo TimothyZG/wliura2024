@@ -9,35 +9,28 @@ from wilds import get_dataset
 from wilds.common.data_loaders import get_train_loader, get_eval_loader
 from torchvision.transforms import v2
 from pytorch_cinic.dataset import CINIC10
-import pandas as pd
 
 
 
 random_state = 42 # For reproducibility
 
-train_transform_routine = v2.Compose([
-    v2.RandomResizedCrop(size=(224, 224), antialias=True),
-    v2.RandomHorizontalFlip(p=0.5),
-    transforms.Lambda(lambda x: x.convert('RGB')),  # Convert to three channels
-    transforms.ToTensor(),  # Transform to tensor for torch
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standardize
-])
-
-test_transform_routine = transforms.Compose([
-    transforms.Resize((224, 224)),  # Resize images to 224x224 for resnets
-    transforms.Lambda(lambda x: x.convert('RGB')),  # Convert to three channels
-    transforms.ToTensor(),  # Transform to tensor for torch
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standardize
-])
-
-def parse_timestamp(timestamp):
-    try:
-        return pd.to_datetime(timestamp, format="%Y-%m-%dT%H:%M:%S.%fZ")
-    except ValueError:
-        return pd.to_datetime(timestamp, format="%Y-%m-%dT%H:%M:%S%z")
     
-    
-def get_dataloader(ds,root,bs,nworkers):
+def get_dataloader(ds,root,bs,nworkers,resize=448):
+    train_transform_routine = v2.Compose([
+        transforms.RandAugment(num_ops=2, magnitude=9),
+        transforms.Resize((resize, resize)),
+        v2.RandomHorizontalFlip(p=0.5),
+        transforms.Lambda(lambda x: x.convert('RGB')),  # Convert to three channels
+        transforms.ToTensor(),  # Transform to tensor for torch
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standardize
+    ])
+
+    test_transform_routine = transforms.Compose([
+        transforms.Resize((resize, resize)),  # Resize images to 224x224 for resnets
+        transforms.Lambda(lambda x: x.convert('RGB')),  # Convert to three channels
+        transforms.ToTensor(),  # Transform to tensor for torch
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standardize
+    ])
     if(ds=="DTD"):
         train = DTD(root=root,split="train",transform=train_transform_routine,download=True)
         val = DTD(root=root,split="val",transform=test_transform_routine,download=True)
@@ -90,7 +83,9 @@ def get_dataloader(ds,root,bs,nworkers):
         id_val_loader = get_eval_loader("standard", id_val_data, batch_size=bs, num_workers=nworkers)
         id_test_data = dataset.get_subset("id_test", transform=test_transform_routine)
         id_test_loader = get_eval_loader("standard", id_test_data, batch_size=bs, num_workers=nworkers)
-        return train_loader,id_val_loader,id_test_loader
+        ood_test_data = dataset.get_subset("test", transform=test_transform_routine)
+        ood_test_loader = get_eval_loader("standard", ood_test_data, batch_size=bs, num_workers=nworkers)
+        return train_loader,id_val_loader, id_test_loader, ood_test_loader
     elif(ds=="SUN397"):
         dataset = SUN397(root=root, transform=test_transform_routine, download=True)
         train_idx, test_idx = train_test_split(list(range(len(dataset))), test_size=0.4, random_state=random_state)
@@ -107,16 +102,6 @@ def get_dataloader(ds,root,bs,nworkers):
         train.dataset.transform = train_transform_routine  # Apply train transforms to the training subset
         val = Subset(dataset, val_idx)
         test = Subset(dataset, test_idx)
-    elif(ds=="fmow"):
-        dataset = get_dataset(dataset="fmow", root_dir=root, download=True)
-        dataset.metadata['timestamp'] = dataset.metadata['timestamp'].apply(parse_timestamp)
-        train_data = dataset.get_subset("train", transform=train_transform_routine)
-        train_loader = get_train_loader("standard", train_data, batch_size=bs, num_workers=nworkers)
-        id_val_data = dataset.get_subset("id_val", transform=test_transform_routine)
-        id_val_loader = get_eval_loader("standard", id_val_data, batch_size=bs, num_workers=nworkers)
-        id_test_data = dataset.get_subset("id_test", transform=test_transform_routine)
-        id_test_loader = get_eval_loader("standard", id_test_data, batch_size=bs, num_workers=nworkers)
-        return train_loader,id_val_loader,id_test_loader
     elif(ds=="rxrx1"):
         dataset = get_dataset(dataset="rxrx1", root_dir=root, download=True)
         train_data = dataset.get_subset("train", transform=train_transform_routine)
@@ -125,7 +110,20 @@ def get_dataloader(ds,root,bs,nworkers):
         id_val_loader = get_eval_loader("standard", id_val_data, batch_size=bs, num_workers=nworkers)
         id_test_data = dataset.get_subset("id_test", transform=test_transform_routine)
         id_test_loader = get_eval_loader("standard", id_test_data, batch_size=bs, num_workers=nworkers)
-        return train_loader,id_val_loader,id_test_loader
+        ood_test_data = dataset.get_subset("test", transform=test_transform_routine)
+        ood_test_loader = get_eval_loader("standard", ood_test_data, batch_size=bs, num_workers=nworkers)
+        return train_loader,id_val_loader,id_test_loader,ood_test_loader
+    elif(ds=="camelyon17"):
+        dataset = get_dataset(dataset="camelyon17", root_dir=root, download=True)
+        train_data = dataset.get_subset("train", transform=train_transform_routine)
+        train_loader = get_train_loader("standard", train_data, batch_size=bs, num_workers=nworkers)
+        id_val_data = dataset.get_subset("val", transform=test_transform_routine)
+        id_val_loader = get_eval_loader("standard", id_val_data, batch_size=bs, num_workers=nworkers)
+        id_test_data = dataset.get_subset("id_test", transform=test_transform_routine)
+        id_test_loader = get_eval_loader("standard", id_test_data, batch_size=bs, num_workers=nworkers)
+        ood_test_data = dataset.get_subset("test", transform=test_transform_routine)
+        ood_test_loader = get_eval_loader("standard", ood_test_data, batch_size=bs, num_workers=nworkers)
+        return train_loader,id_val_loader,id_test_loader,ood_test_loader
     else:
         raise Exception(f"Unrecognized dataset provided to get_dataloader: {ds}, check spelling or implement get_numclass if working with new dataset")
     train_loader = DataLoader(train, batch_size=bs, shuffle=True, num_workers=nworkers)
@@ -150,8 +148,6 @@ def get_numclass(ds):
         return 10
     elif(ds=="Caltech256"):
         return 257
-    elif(ds=="fmow"):
-        return 62
     elif(ds=="rxrx1"):
         return 1139
     else:
