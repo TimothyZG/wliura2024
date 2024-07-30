@@ -170,5 +170,15 @@ slurm*.out
 data/*
 Analysis/artifacts/*
 Pred/*
+Pred_minimum_loss/*
 Analysis/*.csv
 Analysis/csv/*.csv
+lp-ft/*
+lp-ft
+Analysis/csv
+Analysis/csv_lp-ft
+Analysis/artifacts
+Pred_minimum_loss
+Pred
+ss
+iwc
