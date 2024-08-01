@@ -4,6 +4,7 @@ from scipy.special import rel_entr, entr, xlogy
 import torch
 import torch.nn.functional as F
 import sklearn.metrics as metrics
+from sklearn.metrics import f1_score, roc_curve, auc
 import seaborn as sns
 
 # def laplace_pred_mat(P, lap_eps):
@@ -203,3 +204,40 @@ def auroc_ood(pred_df, unc_df, pred_vec, unc_vec, ax):
     ax.set_ylim([0, 1])
     ax.set_ylabel('True Positive Rate')
     ax.set_xlabel('False Positive Rate')
+    
+# Function to load predictions
+# Takes in a list of models and return a list of predictions
+def load_predictions(prefix, testtype, models):
+    return [pd.read_csv(f"{prefix}{testtype}_{model}.csv") for model in models]
+
+# Function to save ensemble predictions
+def save_ensemble_predictions(prefix, testtype, name, predictions):
+    predictions.to_csv(f"{prefix}{testtype}_{name}.csv", index=False)
+
+# Function to generate ensemble name
+def generate_ensemble_name(base_name, models):
+    return f"{base_name}_{'_'.join(models)}"
+
+# Function to evaluate models and store metrics
+def evaluate_models(predictions, label, prefix, testtype, metrics_dict, category, num_classes):
+    for method in predictions:
+        pred_col_name = f"pred_{method}"
+        pred = pd.read_csv(f"{prefix}{testtype}_{method}.csv")
+        label[pred_col_name] = pred.idxmax(axis=1)
+        label[pred_col_name] = label[pred_col_name].str.extract('(\d+)').astype(int)
+        
+        curr_acc = np.mean(label[pred_col_name]==label["target"])
+        curr_f1 = f1_score(label["target"], label[pred_col_name], average='macro')
+        curr_brier = brier_score(one_hot(np.array(label["target"]), num_classes), softmax(pred))
+        curr_ece, curr_mce = calibration(one_hot(np.array(label["target"]), num_classes), softmax(pred))
+        
+        # Store metrics
+        metrics_dict["Model"].append(method)
+        metrics_dict["Test Set"].append(testtype)
+        metrics_dict["Acc"].append(curr_acc)
+        metrics_dict["F1"].append(curr_f1)
+        metrics_dict["Brier"].append(curr_brier)
+        metrics_dict["ECE"].append(curr_ece)
+        metrics_dict["MCE"].append(curr_mce)
+        metrics_dict["Category"].append(category)
+    return metrics_dict
