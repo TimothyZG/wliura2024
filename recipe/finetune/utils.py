@@ -42,10 +42,14 @@ def make_predictions(pred_path_id, target_path_id, pred_path_ood, target_path_oo
 def get_model(model_name):
     if(model_name=="Resnet18"):
         model = models.resnet18(weights='IMAGENET1K_V1')
+    elif(model_name=="Resnet34"):
+        model = models.resnet34(weights='IMAGENET1K_V1')
     elif(model_name=="Resnet50"):
         model = models.resnet50(weights='IMAGENET1K_V2')
     elif(model_name=="Resnet101"):
         model = models.resnet101(weights='IMAGENET1K_V2')
+    elif(model_name=="Resnet152"):
+        model = models.resnet152(weights='IMAGENET1K_V2')
     elif(model_name=="EffNet_S"):
         model = models.efficientnet_v2_s(weights="IMAGENET1K_V1")
     elif(model_name=="EffNet_M"):
