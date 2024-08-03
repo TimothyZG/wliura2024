@@ -79,6 +79,11 @@ def softmax(P):
     P_tensor = torch.tensor(P.values, dtype=torch.float32)
     P_softmax = F.softmax(P_tensor, dim=1)
     return P_softmax.numpy()
+
+def softmax_response_unc(P):
+    P_softmax = softmax(P)
+    P_softmax_response = np.max(P_softmax,axis=1)
+    return 1-P_softmax_response
     
 def one_hot(a, num_classes):
   return np.squeeze(np.eye(num_classes)[a.reshape(-1)])
@@ -239,5 +244,64 @@ def evaluate_models(predictions, label, prefix, testtype, metrics_dict, category
         metrics_dict["Brier"].append(curr_brier)
         metrics_dict["ECE"].append(curr_ece)
         metrics_dict["MCE"].append(curr_mce)
-        metrics_dict["Category"].append(category)
+        metrics_dict["Predictor Category"].append(category)
     return metrics_dict
+
+# Function to calculate AUROC
+def calculate_auroc(pred_df, unc_df, pred_vec, target_vec, unc_vec):
+    if isinstance(pred_df[pred_vec].iloc[0], str):
+        is_correct = pred_df.apply(lambda row: str(row[target_vec]) not in row[pred_vec], axis=1)
+    else:
+        is_correct = pred_df[pred_vec] != pred_df[target_vec]
+    fpr, tpr, _ = roc_curve(is_correct, unc_df[unc_vec])
+    roc_auc = auc(fpr, tpr)
+    return roc_auc
+
+# Function to update AUROC results
+def update_auroc_results(auroc_results, model, testtype, category, unc_measure, auroc_value):
+    auroc_results["Model"].append(model)
+    auroc_results["Test Set"].append(testtype)
+    auroc_results["Uncertainty Measure"].append(unc_measure)
+    auroc_results["Predictor Category"].append(category)
+    auroc_results["AUROC"].append(auroc_value)
+    return auroc_results
+
+# Function to calculate F1-Coverage AUC
+def calculate_f1_cov_auc(pred_df, unc_df, pred_vec, target_vec, unc_vec, cov_range):
+    rank = get_rank(unc_df)
+    temp = pd.DataFrame()
+    temp["coverage"] = cov_range
+    coverage_ls = (cov_range + 1) / 100 * pred_df.shape[0]
+    for i, cov in enumerate(coverage_ls):
+        cov_pred = pred_df.loc[rank[unc_vec] < cov]
+        temp.loc[i, "f1"] = f1_score(cov_pred[target_vec], cov_pred[pred_vec], average='macro')
+    area = np.sum(temp["f1"])
+    return area
+
+cov_range = np.arange(19, 100)
+
+# Function to update F1-Coverage results
+def update_f1_cov_results(f1_cov_results, model, testtype, category, unc_measure, f1_cov_auc_value):
+    f1_cov_results["Model"].append(model)
+    f1_cov_results["Test Set"].append(testtype)
+    f1_cov_results["Uncertainty Measure"].append(unc_measure)
+    f1_cov_results["Predictor Category"].append(category)
+    f1_cov_results["F1-Cov AUC"].append(f1_cov_auc_value)
+    return f1_cov_results
+
+# Function to calculate AUROC for OOD detection
+def calculate_auroc_ood(pred_df, unc_df, pred_vec, unc_vec):
+    is_ood = np.where(pred_df["test_type"].isin(["ood"]), True, False)
+    fpr, tpr, _ = roc_curve(is_ood, unc_df[unc_vec])
+    roc_auc = auc(fpr, tpr)
+    return roc_auc
+
+
+# Function to update AUROC OOD results
+def update_auroc_ood_results(auroc_ood_results, model, category, unc_measure, auroc_ood_value):
+    auroc_ood_results["Model"].append(model)
+    auroc_ood_results["Test Set"].append("combined")
+    auroc_ood_results["Uncertainty Measure"].append(unc_measure)
+    auroc_ood_results["Predictor Category"].append(category)
+    auroc_ood_results["AUROC OOD"].append(auroc_ood_value)
+    return auroc_ood_results
