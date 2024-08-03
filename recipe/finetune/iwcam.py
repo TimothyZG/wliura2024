@@ -76,7 +76,7 @@ def parse_arguments():
         "-m",
         "--model_name", 
         required = True, 
-        choices = ["Resnet18", "Resnet50", "Resnet101","EffNet_S","EffNet_M","EffNet_L","ViT_B_16","ViT_L_16","ViT_H_14"],
+        choices = ["Resnet18","Resnet34","Resnet50","Resnet101","Resnet152","EffNet_S","EffNet_M","EffNet_L","ViT_B_16","ViT_L_16","ViT_H_14"],
         type=str
     )
     parser.add_argument(
