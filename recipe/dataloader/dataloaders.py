@@ -152,3 +152,51 @@ def get_numclass(ds):
         return 1139
     else:
         raise Exception(f"Unrecognized dataset provided to get_numclass :{ds}, check spelling or implement get_numclass if working with new dataset")
+    
+
+import torch
+from torch.utils.data import TensorDataset, DataLoader
+
+def load_into_memory(dataset, transform):
+    data = []
+    targets = []
+    metadata = []
+    for x, y, meta in dataset:
+        if transform:
+            x = transform(x)
+        data.append(x)
+        targets.append(y)
+        metadata.append(meta)
+    return TensorDataset(torch.stack(data), torch.tensor(targets), torch.tensor(metadata))
+
+def load_iwildcam(root, bs, nworkers, resize):
+    train_transform_routine = v2.Compose([
+        transforms.RandAugment(num_ops=2, magnitude=9),
+        transforms.Resize((resize, resize)),
+        v2.RandomHorizontalFlip(p=0.5),
+        transforms.Lambda(lambda x: x.convert('RGB')),  # Convert to three channels
+        transforms.ToTensor(),  # Transform to tensor for torch
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standardize
+    ])
+
+    test_transform_routine = transforms.Compose([
+        transforms.Resize((resize, resize)),  # Resize images to 224x224 for resnets
+        transforms.Lambda(lambda x: x.convert('RGB')),  # Convert to three channels
+        transforms.ToTensor(),  # Transform to tensor for torch
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standardize
+    ])
+    dataset = get_dataset(dataset="iwildcam", root_dir=root, download=True)
+    
+    train_data = load_into_memory(dataset.get_subset("train"), train_transform_routine)
+    train_loader = DataLoader(train_data, batch_size=bs, num_workers=nworkers, shuffle=True)
+
+    id_val_data = load_into_memory(dataset.get_subset("id_val"), test_transform_routine)
+    id_val_loader = DataLoader(id_val_data, batch_size=bs, num_workers=nworkers, shuffle=False)
+
+    id_test_data = load_into_memory(dataset.get_subset("id_test"), test_transform_routine)
+    id_test_loader = DataLoader(id_test_data, batch_size=bs, num_workers=nworkers, shuffle=False)
+
+    ood_test_data = load_into_memory(dataset.get_subset("test"), test_transform_routine)
+    ood_test_loader = DataLoader(ood_test_data, batch_size=bs, num_workers=nworkers, shuffle=False)
+
+    return train_loader, id_val_loader, id_test_loader, ood_test_loader
