@@ -8,8 +8,8 @@
 #SBATCH --mail-user=<tiange.zhou@outlook.com>
 #SBATCH --mail-type=ALL
 #SBATCH --output=recipe/train-iwc/output/slurm-%j.out
-module purge
 module load python/3.10 scipy-stack
+module load gcc arrow
 source ~/py310/bin/activate
 
 python recipe/train-iwc/hyper-param-tune.py --config-path "recipe/train-iwc/config.yaml"
