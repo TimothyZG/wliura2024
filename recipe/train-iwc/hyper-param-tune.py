@@ -83,7 +83,7 @@ if __name__ == '__main__':
 
     tune_config = {
         "learning_rate": tune.loguniform(config['learning_rate']['min'], config['learning_rate']['max']),
-        "weight_decay": tune.quniform(config['weight_decay']['min'], config['weight_decay']['max']),
+        "weight_decay": tune.uniform(config['weight_decay']['min'], config['weight_decay']['max']),
         "lr_scheduler": tune.choice(config['lr_scheduler']['choices']),
         **config  # Include all other config parameters as they are
     }
