@@ -39,20 +39,20 @@ if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"current device is {device}")
     
-    train_dataloader, val_dataloader, id_test_dataloader, ood_test_dataloader = load_iwildcam(
-        root=config['dataset_root'],
-        bs=config['batch_size'],
-        nworkers=config['workers'],
-        resize=config['resize']
-    )
-    
-    # train_dataloader, val_dataloader, id_test_dataloader, ood_test_dataloader = get_dataloader(
-    #     ds=config['dataset'],
+    # train_dataloader, val_dataloader, id_test_dataloader, ood_test_dataloader = load_iwildcam(
     #     root=config['dataset_root'],
     #     bs=config['batch_size'],
     #     nworkers=config['workers'],
     #     resize=config['resize']
     # )
+    
+    train_dataloader, val_dataloader, id_test_dataloader, ood_test_dataloader = get_dataloader(
+        ds=config['dataset'],
+        root=config['dataset_root'],
+        bs=config['batch_size'],
+        nworkers=config['workers'],
+        resize=config['resize']
+    )
     
     model = utils.get_model(config['model_name'])
     model = utils.freeze_model(model)
