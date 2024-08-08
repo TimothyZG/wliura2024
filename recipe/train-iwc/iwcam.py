@@ -15,11 +15,13 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="Training script")
     parser.add_argument('--config-path', type=str, required=True, help='Path to the config file')
     parser.add_argument('--suffix', type=str, required=True, help='Suffix for the run')
+    parser.add_argument('--data-path', type=str, required=True, help='Path to data file, should be tmpdir')
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_arguments()
     config_path = args.config_path
+    data_path = args.data_path
     suffix = args.suffix
 
     config = utils.load_config(config_path)
@@ -48,7 +50,7 @@ if __name__ == '__main__':
     
     train_dataloader, val_dataloader, id_test_dataloader, ood_test_dataloader = get_dataloader(
         ds=config['dataset'],
-        root=config['dataset_root'],
+        root=data_path,
         bs=config['batch_size'],
         nworkers=config['workers'],
         resize=config['resize']

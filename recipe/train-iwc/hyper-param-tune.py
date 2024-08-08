@@ -17,6 +17,7 @@ import utils
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Hyperparameter tuning script")
     parser.add_argument('--config-path', type=str, required=True, help='Path to the config file')
+    parser.add_argument('--data-path', type=str, required=True, help='Path to the config file')
     return parser.parse_args()
 
 class iWildCamDataset(Dataset):
@@ -72,7 +73,7 @@ def train_model(config):
     # id_test_loader = DataLoader(id_test_dataset, batch_size=config['batch_size'], shuffle=False, num_workers=config['workers'])
     # ood_test_loader = DataLoader(ood_test_dataset, batch_size=config['batch_size'], shuffle=False, num_workers=config['workers'])
     
-    dataset = get_dataset(dataset="iwildcam", root_dir=config['dataset_root'], download=True)
+    dataset = get_dataset(dataset="iwildcam", root_dir=config['data_path'], download=True)
     
     train_data = dataset.get_subset("train", transform=train_transform_routine)
     val_data = dataset.get_subset("id_val", transform=test_transform_routine)
@@ -127,7 +128,7 @@ def train_model(config):
 if __name__ == '__main__':
     args = parse_arguments()
     config_path = args.config_path
-
+    data_path = args.data_path
     config = utils.load_config(config_path)
 
     ray.init()
@@ -136,6 +137,7 @@ if __name__ == '__main__':
         "learning_rate": tune.loguniform(config['learning_rate']['min'], config['learning_rate']['max']),
         "weight_decay": tune.uniform(config['weight_decay']['min'], config['weight_decay']['max']),
         "lr_scheduler": tune.choice(config['lr_scheduler']['choices']),
+        "data_path": data_path,
         **config  # Include all other config parameters as they are
     }
 
@@ -153,7 +155,7 @@ if __name__ == '__main__':
         config=tune_config,
         num_samples=10,
         scheduler=scheduler,
-        storage_path="./tune/"
+        local_dir="./tune/"
     )
 
     print("Best hyperparameters found were: ", analysis.best_config)
