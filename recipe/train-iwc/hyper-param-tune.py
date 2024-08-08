@@ -127,8 +127,10 @@ if __name__ == '__main__':
         train_model,
         resources_per_trial={"cpu": config["workers"], "gpu": 1},
         config=tune_config,
-        num_samples=10,
+        num_samples=20,
         scheduler=scheduler,
+        metric="val_f1",
+        mode="max",
         local_dir="./tune/"
     )
 

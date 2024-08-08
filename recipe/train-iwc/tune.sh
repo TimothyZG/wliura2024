@@ -3,8 +3,8 @@
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:4
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=6
-#SBATCH --time=4:00:00
+#SBATCH --cpus-per-task=8
+#SBATCH --time=7:00:00
 #SBATCH --mail-user=<tiange.zhou@outlook.com>
 #SBATCH --mail-type=ALL
 #SBATCH --output=recipe/train-iwc/output/slurm-%j.out
@@ -18,6 +18,8 @@ mkdir -p $DATA_DIR
 tar xf Data/iwildcam_v2.0.tar -C $DATA_DIR --strip-components=1
 
 # Verify the extraction
-ls $DATA_DIR  # This should now list the contents directly
+ls $DATA_DIR
 
-python recipe/train-iwc/hyper-param-tune.py --config-path "recipe/train-iwc/config.yaml"  --data-path "$DATA_DIR"
+# python recipe/train-iwc/hyper-param-tune.py --config-path "recipe/train-iwc/config-tune-18.yaml"  --data-path "$DATA_DIR"
+# python recipe/train-iwc/hyper-param-tune.py --config-path "recipe/train-iwc/config-tune-50.yaml"  --data-path "$DATA_DIR"
+python recipe/train-iwc/hyper-param-tune.py --config-path "recipe/train-iwc/config-tune-101.yaml"  --data-path "$DATA_DIR"

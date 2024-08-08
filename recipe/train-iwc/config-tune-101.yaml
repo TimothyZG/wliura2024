@@ -1,0 +1,18 @@
+dataset_root: "./Data"
+model_root: "./Models"
+dataset: "iWildCam"
+num_epochs: 10
+batch_size: 16
+workers: 8
+learning_rate:
+  min: 0.00001
+  max: 0.001
+weight_decay:
+  min: 0
+  max: 0.0001
+model_name: "Resnet101"
+num_epochs_linear: 1
+resize: 448
+lr_scheduler:
+  choices: ["cosine", "step", "NONE"]
+wandb_project_name: "iwc"
