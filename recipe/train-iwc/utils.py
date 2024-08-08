@@ -10,7 +10,7 @@ import sys
 import yaml
 from sklearn.metrics import f1_score
 
-def make_predictions(pred_path_id, target_path_id, pred_path_ood, target_path_ood, model, num_classes, id_test_dataloader, ood_test_dataloader, device):
+def make_predictions(pred_path_val, target_path_val, pred_path_id, target_path_id, pred_path_ood, target_path_ood, model, num_classes, val_dataloader, id_test_dataloader, ood_test_dataloader,device):
     model.eval()
     columns = [f'class_{i}' for i in range(num_classes)]
     
@@ -41,6 +41,20 @@ def make_predictions(pred_path_id, target_path_id, pred_path_ood, target_path_oo
     pred_df_ood.to_csv(pred_path_ood, index=False)
     targets_df_ood.to_csv(target_path_ood, index=False)
     print("OOD Predictions successfully saved to CSV files.")
+    
+    pred_df_val = pd.DataFrame(columns=columns)
+    targets_df_val = pd.DataFrame(columns=['target'])
+    with torch.no_grad():
+        for labeled_batch in val_dataloader:
+            data, targets, metadata = labeled_batch
+            data, targets = data.to(device), targets.to(device)
+            outputs = model(data)
+            pred_df_val = pd.concat([pred_df_val,pd.DataFrame(outputs.cpu().numpy(), columns=columns)], ignore_index=True)
+            targets_df_val = pd.concat([targets_df_val,pd.DataFrame({'target': targets.cpu().numpy()})], ignore_index=True)
+
+    pred_df_val.to_csv(pred_path_val, index=False)
+    targets_df_val.to_csv(target_path_val, index=False)
+    print("Val Predictions successfully saved to CSV files.")
     model.train()
     
 def get_model(model_name):
@@ -146,6 +160,9 @@ def load_config(config_path):
     return config
 
 def init_optimizer_scheduler(model, config, num_epochs):
+    print("Initializing Optimizer... Received:")
+    print(f"Learning Rate: {config['learning_rate']}")
+    print(f"Weight Decay: {config['weight_decay']}")
     optimizer = optim.AdamW(model.parameters(), lr=config['learning_rate'], weight_decay=config['weight_decay'])
     scheduler = get_lrs(config['lr_scheduler'], optimizer, num_epochs)
     return optimizer, scheduler

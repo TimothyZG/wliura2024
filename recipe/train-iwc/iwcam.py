@@ -41,13 +41,6 @@ if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"current device is {device}")
     
-    # train_dataloader, val_dataloader, id_test_dataloader, ood_test_dataloader = load_iwildcam(
-    #     root=config['dataset_root'],
-    #     bs=config['batch_size'],
-    #     nworkers=config['workers'],
-    #     resize=config['resize']
-    # )
-    
     train_dataloader, val_dataloader, id_test_dataloader, ood_test_dataloader = get_dataloader(
         ds=config['dataset'],
         root=data_path,
@@ -61,10 +54,12 @@ if __name__ == '__main__':
     model = utils.swap_head(model, config['model_name'], num_classes)
     pred_path_lp = f"iwc/{config['dataset']}_ind_{config['model_name']}lp{suffix}.csv"
     pred_path_ft = f"iwc/{config['dataset']}_ind_{config['model_name']}ft{suffix}.csv"
+    pred_path_val = f"iwc/{config['dataset']}_val_{config['model_name']}ft{suffix}.csv"
     pred_path_lp_ood = f"iwc/{config['dataset']}_ood_{config['model_name']}lp{suffix}.csv"
     pred_path_ft_ood = f"iwc/{config['dataset']}_ood_{config['model_name']}ft{suffix}.csv"
     target_path = f"iwc/target_{config['dataset']}_ind.csv"
     target_path_ood = f"iwc/target_{config['dataset']}_ood.csv"
+    target_path_val = f"iwc/target_{config['dataset']}_val.csv"
 
     optimizer, scheduler = utils.init_optimizer_scheduler(model, config, config['num_epochs'])
     loss_function = nn.CrossEntropyLoss()
@@ -79,7 +74,7 @@ if __name__ == '__main__':
         if config['num_epochs_linear'] > 0 and epoch == config['num_epochs_linear']:
             torch.save(model.state_dict(), lp_model_path)
             print(f"linear probed model saved to {lp_model_path}")
-            utils.make_predictions(pred_path_lp, target_path, pred_path_lp_ood, target_path_ood, model, num_classes, id_test_dataloader, ood_test_dataloader, device)
+            # utils.make_predictions(pred_path_lp, target_path, pred_path_lp_ood, target_path_ood, model, num_classes, id_test_dataloader, ood_test_dataloader, device)
             for param in model.parameters():
                 param.requires_grad = True
             optimizer, scheduler = utils.init_optimizer_scheduler(model, config, config['num_epochs'] - epoch)
@@ -116,4 +111,4 @@ if __name__ == '__main__':
         model.train()
         scheduler.step()
 
-    utils.make_predictions(pred_path_ft, target_path, pred_path_ft_ood, target_path_ood, model, num_classes, id_test_dataloader, ood_test_dataloader, device)
+    utils.make_predictions(pred_path_val, target_path_val, pred_path_ft, target_path, pred_path_ft_ood, target_path_ood, model, num_classes, val_dataloader, id_test_dataloader, ood_test_dataloader, device)

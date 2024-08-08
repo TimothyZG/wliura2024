@@ -20,26 +20,6 @@ def parse_arguments():
     parser.add_argument('--data-path', type=str, required=True, help='Path to the config file')
     return parser.parse_args()
 
-class iWildCamDataset(Dataset):
-    def __init__(self, subset, root_dir, transform=None):
-        metadata_path = os.path.join(root_dir, 'iwildcam_v2.0', 'metadata.csv')
-        print(f"Checking if metadata exists at {metadata_path}")
-        if not os.path.exists(metadata_path):
-            raise FileNotFoundError(f"Metadata file does not exist at {metadata_path}")
-        
-        self.dataset = get_dataset(dataset="iwildcam", root_dir=root_dir, download=True)
-        self.data = self.dataset.get_subset(subset, transform=transform)
-        self.transform = transform
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, idx):
-        sample = self.data[idx]
-        if self.transform:
-            sample = self.transform(sample)
-        return sample
-
 # Define the transforms
 train_transform_routine = transforms.Compose([
     transforms.RandAugment(num_ops=2, magnitude=9),
@@ -58,21 +38,11 @@ test_transform_routine = transforms.Compose([
 ])
 
 def train_model(config):
+    print(f"{config = }")
     num_classes = 182
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Current device is {device}")
 
-    # Use the custom DataLoader directly
-    # train_dataset = iWildCamDataset(subset="train", root_dir=config['dataset_root'], transform=train_transform_routine)
-    # val_dataset = iWildCamDataset(subset="id_val", root_dir=config['dataset_root'], transform=test_transform_routine)
-    # id_test_dataset = iWildCamDataset(subset="id_test", root_dir=config['dataset_root'], transform=test_transform_routine)
-    # ood_test_dataset = iWildCamDataset(subset="test", root_dir=config['dataset_root'], transform=test_transform_routine)
-
-    # train_loader = DataLoader(train_dataset, batch_size=config['batch_size'], shuffle=True, num_workers=config['workers'])
-    # val_loader = DataLoader(val_dataset, batch_size=config['batch_size'], shuffle=False, num_workers=config['workers'])
-    # id_test_loader = DataLoader(id_test_dataset, batch_size=config['batch_size'], shuffle=False, num_workers=config['workers'])
-    # ood_test_loader = DataLoader(ood_test_dataset, batch_size=config['batch_size'], shuffle=False, num_workers=config['workers'])
-    
     dataset = get_dataset(dataset="iwildcam", root_dir=config['data_path'], download=True)
     
     train_data = dataset.get_subset("train", transform=train_transform_routine)
@@ -138,7 +108,11 @@ if __name__ == '__main__':
         "weight_decay": tune.uniform(config['weight_decay']['min'], config['weight_decay']['max']),
         "lr_scheduler": tune.choice(config['lr_scheduler']['choices']),
         "data_path": data_path,
-        **config  # Include all other config parameters as they are
+        "batch_size": config["batch_size"],  # Ensure to include these as they are
+        "workers": config["workers"],
+        "num_epochs": config["num_epochs"],
+        "model_name": config["model_name"],
+        "num_epochs_linear": config["num_epochs_linear"]
     }
 
     scheduler = ASHAScheduler(
