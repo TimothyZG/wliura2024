@@ -7,35 +7,6 @@ import sklearn.metrics as metrics
 from sklearn.metrics import f1_score, roc_curve, auc
 import seaborn as sns
 
-# def laplace_pred_mat(P, lap_eps):
-#     P+=lap_eps
-#     row_sums = P.sum(axis=1)
-#     normalized_P = P.div(row_sums, axis=0)
-#     return normalized_P
-    
-# def calc_kl_np(P, Q, lap_eps=1e-5):
-#     P = laplace_pred_mat(P, lap_eps)
-#     Q = laplace_pred_mat(Q, lap_eps)
-#     return np.sum(rel_entr(P, Q), axis=1)
-
-# # Calculate Entropy
-# def calc_entropy_np(P, lap_eps=1e-5):
-#     P = pd.DataFrame(F.softmax(torch.tensor(P.values),dim=1).numpy())
-#     P = laplace_pred_mat(P, lap_eps)
-#     return np.sum(entr(P), axis=1)
-
-# # Calculate Cross-Entropy
-# def calc_cross_ent_np(P, Q, lap_eps=1e-5):
-#     P = pd.DataFrame(F.softmax(torch.tensor(P.values),dim=1).numpy())
-#     Q = pd.DataFrame(F.softmax(torch.tensor(Q.values),dim=1).numpy())
-#     P = laplace_pred_mat(P, lap_eps)
-#     Q = laplace_pred_mat(Q, lap_eps)
-#     return (-np.sum(xlogy(P,Q), axis=1))
-
-# def calc_nll_np(p, lap_eps=1e-5):
-#     P = laplace_pred_mat(P, lap_eps)
-#     return -np.log(p)
-
 def calc_entr_torch(P):
     P_tensor = torch.tensor(P.values, dtype=torch.float32)
     P_softmax = F.softmax(P_tensor, dim=1)
@@ -179,7 +150,7 @@ def auroc(pred_df, unc_df, pred_vec, target_vec, unc_vec, ax):
 def get_rank(unc_pred):
     rank = pd.DataFrame()
     for curr_metric in unc_pred.columns:
-        rank[curr_metric] = unc_pred[curr_metric].rank()
+        rank.loc[:,curr_metric] = unc_pred[curr_metric].rank()
     return rank
 
 def acc_cov_tradeoff(pred_df, pred_vec, target_vec, unc_vec, rank, ax, cov_range, criteria="f1"):
