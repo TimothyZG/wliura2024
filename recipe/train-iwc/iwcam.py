@@ -98,9 +98,9 @@ if __name__ == '__main__':
             if batch_idx % 100 == 0:
                 wandb.log({"epoch": epoch, "batch": batch_idx, "loss": loss.item(), "train_accuracy": train_accuracy})
 
-        val_accuracy, val_loss = utils.evaluate(model, val_dataloader, loss_function, device)
-        id_test_accuracy, _ = utils.evaluate(model, id_test_dataloader, loss_function, device)
-        ood_test_accuracy, _ = utils.evaluate(model, ood_test_dataloader, loss_function, device)
+        val_accuracy, val_loss, f1 = utils.evaluate(model, val_dataloader, loss_function, device)
+        id_test_accuracy, _, _ = utils.evaluate(model, id_test_dataloader, loss_function, device)
+        ood_test_accuracy, _, _ = utils.evaluate(model, ood_test_dataloader, loss_function, device)
 
         utils.log_metrics(epoch, batch_idx, loss, train_accuracy, val_accuracy, val_loss, id_test_accuracy, ood_test_accuracy)
 

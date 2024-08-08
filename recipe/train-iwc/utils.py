@@ -138,6 +138,11 @@ def load_config(config_path):
         sys.exit(1)
     with open(config_path, 'r') as file:
         config = yaml.safe_load(file)
+    # Replace placeholders with actual environment variables
+    for key, value in config.items():
+        if isinstance(value, str):
+            config[key] = os.path.expandvars(value)
+    
     return config
 
 def init_optimizer_scheduler(model, config, num_epochs):
