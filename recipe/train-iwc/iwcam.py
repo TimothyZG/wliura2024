@@ -85,21 +85,21 @@ if __name__ == '__main__':
             data, targets = data.to(device), targets.to(device)
             optimizer.zero_grad()
             outputs = model(data)
-            loss = loss_function(outputs, targets)
-            loss.backward()
+            training_loss = loss_function(outputs, targets)
+            training_loss.backward()
             optimizer.step()
             _, predicted = torch.max(outputs, 1)
             total += targets.size(0)
             correct += (predicted == targets).sum().item()
             train_accuracy = 100 * correct / total
             if batch_idx % 100 == 0:
-                wandb.log({"epoch": epoch, "batch": batch_idx, "loss": loss.item(), "train_accuracy": train_accuracy})
+                wandb.log({"epoch": epoch, "batch": batch_idx, "loss": training_loss.item(), "train_accuracy": train_accuracy})
 
         val_accuracy, val_loss, f1 = utils.evaluate(model, val_dataloader, loss_function, device)
         id_test_accuracy, _, _ = utils.evaluate(model, id_test_dataloader, loss_function, device)
         ood_test_accuracy, _, _ = utils.evaluate(model, ood_test_dataloader, loss_function, device)
 
-        utils.log_metrics(epoch, batch_idx, loss, train_accuracy, val_accuracy, val_loss, id_test_accuracy, ood_test_accuracy)
+        utils.log_metrics(epoch, batch_idx, training_loss, train_accuracy, val_accuracy, val_loss, id_test_accuracy, ood_test_accuracy)
 
         if val_accuracy > max_acc:
             torch.save(model.state_dict(), model_path)
@@ -107,7 +107,7 @@ if __name__ == '__main__':
             max_acc = val_accuracy
 
         curr_lr = scheduler.get_last_lr()
-        print(f"Epoch {epoch+1}/{config['num_epochs']} Completed | Loss: {loss.item():.4f} | Accuracy: {train_accuracy:.2f}% | Val Accuracy: {val_accuracy:.2f} | Val Loss: {val_loss:.2f}| LR: {curr_lr}")
+        print(f"Epoch {epoch+1}/{config['num_epochs']} Completed | Loss: {training_loss.item():.4f} | Accuracy: {train_accuracy:.2f}% | Val Accuracy: {val_accuracy:.2f} | Val Loss: {val_loss:.2f}| LR: {curr_lr}")
         model.train()
         scheduler.step()
 

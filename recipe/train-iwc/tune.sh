@@ -21,5 +21,7 @@ tar xf Data/iwildcam_v2.0.tar -C $DATA_DIR --strip-components=1
 ls $DATA_DIR
 
 # python recipe/train-iwc/hyper-param-tune.py --config-path "recipe/train-iwc/config-tune-18.yaml"  --data-path "$DATA_DIR"
+# python recipe/train-iwc/hyper-param-tune.py --config-path "recipe/train-iwc/config-tune-34.yaml"  --data-path "$DATA_DIR"
 # python recipe/train-iwc/hyper-param-tune.py --config-path "recipe/train-iwc/config-tune-50.yaml"  --data-path "$DATA_DIR"
-python recipe/train-iwc/hyper-param-tune.py --config-path "recipe/train-iwc/config-tune-101.yaml"  --data-path "$DATA_DIR"
+# python recipe/train-iwc/hyper-param-tune.py --config-path "recipe/train-iwc/config-tune-101.yaml"  --data-path "$DATA_DIR"
+python recipe/train-iwc/hyper-param-tune.py --config-path "recipe/train-iwc/config-tune-152.yaml"  --data-path "$DATA_DIR"

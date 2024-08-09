@@ -129,9 +129,7 @@ if __name__ == '__main__':
         config=tune_config,
         num_samples=20,
         scheduler=scheduler,
-        metric="val_f1",
-        mode="max",
         local_dir="./tune/"
     )
 
-    print("Best hyperparameters found were: ", analysis.best_config)
+    print("Best hyperparameters found were: ", analysis.get_best_config("val_f1", "max"))
