@@ -276,3 +276,38 @@ def update_auroc_ood_results(auroc_ood_results, model, category, unc_measure, au
     auroc_ood_results["Predictor Category"].append(category)
     auroc_ood_results["AUROC OOD"].append(auroc_ood_value)
     return auroc_ood_results
+
+def generate_duos(pred_prefix, base_name, testtype, smaller_model_ls, larger_model_ls, predictor_categories):
+    for smaller_model in smaller_model_ls:
+        for larger_model in larger_model_ls:
+            curr_duo_pred = softvote([pd.read_csv(f"{pred_prefix}{testtype}_{smaller_model}.csv"), 
+                                            pd.read_csv(f"{pred_prefix}{testtype}_{larger_model}.csv")])
+            curr_duo_name = generate_ensemble_name(base_name, [smaller_model, larger_model])
+            save_ensemble_predictions(pred_prefix, testtype, curr_duo_name, curr_duo_pred)
+            if not (curr_duo_name in predictor_categories[base_name]):
+                predictor_categories[base_name].append(curr_duo_name)
+    return predictor_categories
+
+def generate_weighted_duos(target_prefix, val_set, pred_prefix, base_name, testtype, smaller_model_ls, larger_model_ls, predictor_categories):
+    label = pd.read_csv(f"{target_prefix}{val_set}.csv")
+    for smaller_model in smaller_model_ls:
+        for larger_model in larger_model_ls:
+            pred_smaller_val = pd.read_csv(f"{pred_prefix}{val_set}_{smaller_model}.csv")
+            pred_larger_val = pd.read_csv(f"{pred_prefix}{val_set}_{larger_model}.csv")
+            temp_f1_df = {"p": [],"f1": []}
+            for p in np.arange(0,1.01,0.01):
+                weighted_pred = (p*pred_smaller_val + (1-p)*pred_larger_val).idxmax(axis=1).str.extract('(\d+)').astype(int)
+                curr_f1 = f1_score(label["target"], weighted_pred, average='macro')
+                temp_f1_df["p"].append(p)
+                temp_f1_df["f1"].append(curr_f1)
+            f1_df = pd.DataFrame(temp_f1_df)
+            opt_f1_index = f1_df["f1"].argmax()
+            opt_p = f1_df["p"][opt_f1_index]
+            pred_smaller = pd.read_csv(f"{pred_prefix}{testtype}_{smaller_model}.csv")
+            pred_larger = pd.read_csv(f"{pred_prefix}{testtype}_{larger_model}.csv")
+            curr_duo_pred = opt_p*pred_smaller + (1-opt_p)*pred_larger
+            curr_duo_name = generate_ensemble_name(base_name, [smaller_model, larger_model])+f"_{opt_p}"
+            save_ensemble_predictions(pred_prefix, testtype, curr_duo_name, curr_duo_pred)
+            if not (curr_duo_name in predictor_categories[base_name]):
+                predictor_categories[base_name].append(curr_duo_name)
+    return predictor_categories
