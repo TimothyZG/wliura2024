@@ -1,0 +1,13 @@
+dataset_root: $SLURM_TMPDIR/data
+model_root: "./Models"
+dataset: "iWildCam"
+num_epochs: 15
+batch_size: 16
+workers: 8
+learning_rate: 0.00042
+weight_decay: 0.000068
+model_name: "Resnet50"
+num_epochs_linear: 1
+resize: 448
+lr_scheduler: "step"
+wandb_project_name: "iwc"
