@@ -56,7 +56,7 @@ def train_model(config):
         model = utils.freeze_model(model)
     model = utils.swap_head(model, config['model_name'], num_classes)
 
-    optimizer, scheduler = utils.init_optimizer_scheduler(model, config, config['num_epochs'])
+    optimizer, scheduler = utils.init_optimizer_scheduler(model, config, config['num_epochs'], lp=True)
     loss_function = nn.CrossEntropyLoss()
 
     model.train()
@@ -104,9 +104,9 @@ if __name__ == '__main__':
     ray.init()
 
     tune_config = {
-        "learning_rate": tune.loguniform(config['learning_rate']['min'], config['learning_rate']['max']),
-        "weight_decay": tune.uniform(config['weight_decay']['min'], config['weight_decay']['max']),
-        "lr_scheduler": tune.choice(config['lr_scheduler']['choices']),
+        "learning_rate": tune.grid_search(config['learning_rate']['choices']),
+        "weight_decay": tune.grid_search(config['weight_decay']['choices']),
+        "lr_scheduler": tune.grid_search(config['lr_scheduler']['choices']),
         "data_path": data_path,
         "batch_size": config["batch_size"],  # Ensure to include these as they are
         "workers": config["workers"],
@@ -119,7 +119,7 @@ if __name__ == '__main__':
         metric="val_f1",
         mode="max",
         max_t=config["num_epochs"],
-        grace_period=1,
+        grace_period=3,
         reduction_factor=2
     )
 
@@ -127,7 +127,6 @@ if __name__ == '__main__':
         train_model,
         resources_per_trial={"cpu": config["workers"], "gpu": 1},
         config=tune_config,
-        num_samples=20,
         scheduler=scheduler,
         local_dir="./tune/"
     )

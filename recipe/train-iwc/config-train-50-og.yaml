@@ -9,5 +9,5 @@ weight_decay: 0
 model_name: "Resnet50"
 num_epochs_linear: 0
 resize: 448
-lr_scheduler: "cosine"
-wandb_project_name: "iwc-820"
+lr_scheduler: "NONE"
+wandb_project_name: "iwc"

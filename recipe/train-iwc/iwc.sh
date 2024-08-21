@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --mem=32000M
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:4
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=8
-#SBATCH --time=16:00:00
+#SBATCH --cpus-per-task=4
+#SBATCH --time=20:00:00
 #SBATCH --mail-user=<tiange.zhou@outlook.com>
 #SBATCH --mail-type=ALL
 #SBATCH --output=recipe/train-iwc/output/slurm-%j.out
@@ -23,8 +23,18 @@ ls $DATA_DIR  # This should now list the contents directly
 # python recipe/train-iwc/iwcam.py --suffix 1 --config-path "recipe/train-iwc/config-train-18.yaml" --data-path "$DATA_DIR"
 # python recipe/train-iwc/iwcam.py --suffix 2 --config-path "recipe/train-iwc/config-train-18.yaml" --data-path "$DATA_DIR"
 
+# python recipe/train-iwc/iwcam.py --suffix 5 --config-path "recipe/train-iwc/config-train-18-without-lp.yaml" --data-path "$DATA_DIR"
+
+# python recipe/train-iwc/iwcam.py --suffix 1 --config-path "recipe/train-iwc/config-train-34.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/iwcam.py --suffix 2 --config-path "recipe/train-iwc/config-train-34.yaml" --data-path "$DATA_DIR"
+
 # python recipe/train-iwc/iwcam.py --suffix 1 --config-path "recipe/train-iwc/config-train-50.yaml" --data-path "$DATA_DIR"
 # python recipe/train-iwc/iwcam.py --suffix 2 --config-path "recipe/train-iwc/config-train-50.yaml" --data-path "$DATA_DIR"
 
+# python recipe/train-iwc/iwcam.py --suffix 5 --config-path "recipe/train-iwc/config-train-50-og.yaml" --data-path "$DATA_DIR"
+
 # python recipe/train-iwc/iwcam.py --suffix 1 --config-path "recipe/train-iwc/config-train-101.yaml" --data-path "$DATA_DIR"
-# python recipe/train-iwc/iwcam.py --suffix 2 --config-path "recipe/train-iwc/config-train-101.yaml" --data-path "$DATA_DIR"
+python recipe/train-iwc/iwcam.py --suffix 2 --config-path "recipe/train-iwc/config-train-101.yaml" --data-path "$DATA_DIR"
+
+# python recipe/train-iwc/iwcam.py --suffix 1 --config-path "recipe/train-iwc/config-train-152.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/iwcam.py --suffix 2 --config-path "recipe/train-iwc/config-train-152.yaml" --data-path "$DATA_DIR"

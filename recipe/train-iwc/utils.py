@@ -123,7 +123,7 @@ def evaluate(model, dataloader, loss_function, device):
             all_targets.extend(targets.cpu().numpy())
 
     accuracy = total_correct / total_samples
-    f1 = f1_score(all_targets, all_preds, average='weighted')
+    f1 = f1_score(all_targets, all_preds, average='macro')
     return accuracy, loss, f1
 
 def log_metrics(epoch, batch_idx, loss, train_accuracy, val_accuracy, val_loss, id_test_accuracy, ood_test_accuracy):
@@ -159,10 +159,14 @@ def load_config(config_path):
     
     return config
 
-def init_optimizer_scheduler(model, config, num_epochs):
+def init_optimizer_scheduler(model, config, num_epochs, lp=False):
+    if lp:
+        use_lr = 0.01
+    else:
+        use_lr = config["learning_rate"]
     print("Initializing Optimizer... Received:")
-    print(f"Learning Rate: {config['learning_rate']}")
+    print(f"Learning Rate: {use_lr}")
     print(f"Weight Decay: {config['weight_decay']}")
-    optimizer = optim.AdamW(model.parameters(), lr=config['learning_rate'], weight_decay=config['weight_decay'])
+    optimizer = optim.AdamW(model.parameters(), lr=use_lr, weight_decay=config['weight_decay'])
     scheduler = get_lrs(config['lr_scheduler'], optimizer, num_epochs)
     return optimizer, scheduler
