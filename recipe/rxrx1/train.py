@@ -6,8 +6,8 @@ import sys
 import yaml
 import utils
 import argparse
-import torch.optim as optim
-from torch.optim.lr_scheduler import CosineAnnealingLR, StepLR
+
+use_Best = False
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataloader.dataloaders import get_dataloader, get_numclass, load_iwildcam
@@ -39,6 +39,7 @@ if __name__ == '__main__':
         name=f"{config['model_name']}-ms",
         config=config
     )
+    torch.manual_seed(suffix)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"current device is {device}")
     
@@ -47,21 +48,22 @@ if __name__ == '__main__':
         root=data_path,
         bs=config['batch_size'],
         nworkers=config['workers'],
-        resize=config['resize'],
-        no_regularizer=True
+        resize=config['resize']
     )
     
     model = utils.get_model(config['model_name'])
     model = utils.swap_head(model, config['model_name'], num_classes)
-    pred_folder = "iwcsatw"
-    target_path = f"{pred_folder}/target_{config['dataset']}_ind.csv"
-    target_path_ood = f"{pred_folder}/target_{config['dataset']}_ood.csv"
-    target_path_val = f"{pred_folder}/target_{config['dataset']}_val.csv"
+    csv_folder = "rxrx1"
+    pred_path_lp = f"{csv_folder}/{config['dataset']}_ind_{config['model_name']}lp{suffix}.csv"
+    pred_path_ft = f"{csv_folder}/{config['dataset']}_ind_{config['model_name']}ft{suffix}.csv"
+    pred_path_val = f"{csv_folder}/{config['dataset']}_val_{config['model_name']}ft{suffix}.csv"
+    pred_path_lp_ood = f"{csv_folder}/{config['dataset']}_ood_{config['model_name']}lp{suffix}.csv"
+    pred_path_ft_ood = f"{csv_folder}/{config['dataset']}_ood_{config['model_name']}ft{suffix}.csv"
+    target_path = f"{csv_folder}/target_{config['dataset']}_ind.csv"
+    target_path_ood = f"{csv_folder}/target_{config['dataset']}_ood.csv"
+    target_path_val = f"{csv_folder}/target_{config['dataset']}_val.csv"
 
-    # optimizer, scheduler = utils.init_optimizer_scheduler(model, config, config['num_epochs'])
-    optimizer = optim.Adam(model.parameters(), lr=config["learning_rate"])
-    scheduler = CosineAnnealingLR(optimizer, T_max=config['num_epochs'])
-
+    optimizer, scheduler = utils.init_optimizer_scheduler(model, config)
     loss_function = nn.CrossEntropyLoss()
 
     model.train()
@@ -71,9 +73,6 @@ if __name__ == '__main__':
     max_f1 = 0
 
     for epoch in range(config['num_epochs']):
-        pred_path_ind = f"{pred_folder}/{config['dataset']}_ind_{config['model_name']}{suffix}_e{epoch}.csv"
-        pred_path_val = f"{pred_folder}/{config['dataset']}_val_{config['model_name']}{suffix}_e{epoch}.csv"
-        pred_path_ood = f"{pred_folder}/{config['dataset']}_ood_{config['model_name']}{suffix}_e{epoch}.csv"
         total = 0
         correct = 0
         for batch_idx, labeled_batch in enumerate(train_dataloader):
@@ -96,10 +95,18 @@ if __name__ == '__main__':
         ood_test_accuracy, _, _ = utils.evaluate(model, ood_test_dataloader, loss_function, device)
 
         utils.log_metrics(epoch, batch_idx, training_loss, train_accuracy, val_accuracy, val_loss, id_test_accuracy, ood_test_accuracy)
+
+        if f1 > max_f1:
+            torch.save(model.state_dict(), model_path)
+            print(f"Best Model Updated (f1 = {f1})")
+            max_f1 = f1
+
         curr_lr = scheduler.get_last_lr()
         print(f"Epoch {epoch+1}/{config['num_epochs']} Completed | Loss: {training_loss.item():.4f} | Accuracy: {train_accuracy:.2f}% | Val Accuracy: {val_accuracy:.2f} | Val Loss: {val_loss:.2f}| LR: {curr_lr}")
-
-        utils.make_predictions(pred_path_val, target_path_val, pred_path_ind, target_path, pred_path_ood, target_path_ood, model, num_classes, val_dataloader, id_test_dataloader, ood_test_dataloader, device)
-        
         model.train()
         scheduler.step()
+        
+    # Load the best model before making predictions
+    if (use_Best):
+        model.load_state_dict(torch.load(model_path))
+    utils.make_predictions(pred_path_val, target_path_val, pred_path_ft, target_path, pred_path_ft_ood, target_path_ood, model, num_classes, val_dataloader, id_test_dataloader, ood_test_dataloader, device)

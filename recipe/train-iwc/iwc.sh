@@ -22,19 +22,20 @@ ls $DATA_DIR  # This should now list the contents directly
 
 # python recipe/train-iwc/iwcam.py --suffix 1 --config-path "recipe/train-iwc/config-train-18.yaml" --data-path "$DATA_DIR"
 # python recipe/train-iwc/iwcam.py --suffix 2 --config-path "recipe/train-iwc/config-train-18.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/iwcam.py --suffix 3 --config-path "recipe/train-iwc/config-train-18.yaml" --data-path "$DATA_DIR"
 
-# python recipe/train-iwc/iwcam.py --suffix 5 --config-path "recipe/train-iwc/config-train-18-without-lp.yaml" --data-path "$DATA_DIR"
-
-# python recipe/train-iwc/iwcam.py --suffix 1 --config-path "recipe/train-iwc/config-train-34.yaml" --data-path "$DATA_DIR"
-# python recipe/train-iwc/iwcam.py --suffix 2 --config-path "recipe/train-iwc/config-train-34.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/iwcam.py --suffix 5 --config-path "recipe/train-iwc/config-train-34.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/iwcam.py --suffix 6 --config-path "recipe/train-iwc/config-train-34.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/iwcam.py --suffix 7 --config-path "recipe/train-iwc/config-train-34.yaml" --data-path "$DATA_DIR"
 
 # python recipe/train-iwc/iwcam.py --suffix 1 --config-path "recipe/train-iwc/config-train-50.yaml" --data-path "$DATA_DIR"
 # python recipe/train-iwc/iwcam.py --suffix 2 --config-path "recipe/train-iwc/config-train-50.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/iwcam.py --suffix 3 --config-path "recipe/train-iwc/config-train-50.yaml" --data-path "$DATA_DIR"
 
-# python recipe/train-iwc/iwcam.py --suffix 5 --config-path "recipe/train-iwc/config-train-50-og.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/iwcam.py --suffix 3 --config-path "recipe/train-iwc/config-train-101.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/iwcam.py --suffix 4 --config-path "recipe/train-iwc/config-train-101.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/iwcam.py --suffix 5 --config-path "recipe/train-iwc/config-train-101.yaml" --data-path "$DATA_DIR"
 
-# python recipe/train-iwc/iwcam.py --suffix 1 --config-path "recipe/train-iwc/config-train-101.yaml" --data-path "$DATA_DIR"
-python recipe/train-iwc/iwcam.py --suffix 2 --config-path "recipe/train-iwc/config-train-101.yaml" --data-path "$DATA_DIR"
-
-# python recipe/train-iwc/iwcam.py --suffix 1 --config-path "recipe/train-iwc/config-train-152.yaml" --data-path "$DATA_DIR"
-# python recipe/train-iwc/iwcam.py --suffix 2 --config-path "recipe/train-iwc/config-train-152.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/iwcam.py --suffix 3 --config-path "recipe/train-iwc/config-train-152.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/iwcam.py --suffix 4 --config-path "recipe/train-iwc/config-train-152.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/iwcam.py --suffix 5 --config-path "recipe/train-iwc/config-train-152.yaml" --data-path "$DATA_DIR"

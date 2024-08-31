@@ -1,0 +1,13 @@
+dataset_root: $SLURM_TMPDIR/data
+model_root: "./Models"
+dataset: "rxrx1"
+num_epochs: 100
+batch_size: 75
+workers: 6
+learning_rate: 0.001
+weight_decay: 0.00001
+model_name: "Resnet34"
+num_epochs_linear: 0
+resize: 256
+lr_scheduler: "cosine"
+wandb_project_name: "rxrx1-825"

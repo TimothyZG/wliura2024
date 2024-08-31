@@ -18,4 +18,5 @@ mkdir -p $DATA_DIR
 tar xf Data/iwildcam_v2.0.tar -C $DATA_DIR --strip-components=1
 
 # python recipe/train-iwc/train-save-along-the-way.py --suffix 1 --config-path "recipe/train-iwc/config-train-18-patw.yaml" --data-path "$DATA_DIR"
-python recipe/train-iwc/train-save-along-the-way.py --suffix 2 --config-path "recipe/train-iwc/config-train-18-patw.yaml" --data-path "$DATA_DIR"
+# python recipe/train-iwc/train-save-along-the-way.py --suffix 2 --config-path "recipe/train-iwc/config-train-18-patw.yaml" --data-path "$DATA_DIR"
+python recipe/train-iwc/train-save-along-the-way.py --suffix 3 --config-path "recipe/train-iwc/config-train-18-patw.yaml" --data-path "$DATA_DIR"

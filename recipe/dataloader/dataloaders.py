@@ -9,27 +9,60 @@ from wilds import get_dataset
 from wilds.common.data_loaders import get_train_loader, get_eval_loader
 from torchvision.transforms import v2
 from pytorch_cinic.dataset import CINIC10
+import torchvision.transforms.functional as F
 
 
 
 random_state = 42 # For reproducibility
 
-    
-def get_dataloader(ds,root,bs,nworkers,resize=448):
-    train_transform_routine = v2.Compose([
-        transforms.RandAugment(num_ops=2, magnitude=9),
-        transforms.Resize((resize, resize)),
-        v2.RandomHorizontalFlip(p=0.5),
+def standardize(x):
+    mean = x.mean(dim=(1, 2), keepdim=True)
+    std = x.std(dim=(1, 2), keepdim=True)
+    std[std == 0.] = 1.0  # Prevent division by zero
+    return (x - mean) / std
+
+def get_dataloader(ds, root, bs, nworkers, resize=448, no_regularizer=False, no_resize=False):
+    if no_regularizer:
+        train_transform_routine = v2.Compose([
+            transforms.Resize((resize, resize)),
+            transforms.Lambda(lambda x: x.convert('RGB')),  # Convert to three channels
+            transforms.ToTensor(),  # Transform to tensor for torch
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standardize using ImageNet stats
+        ])
+    else:
+        train_transform_routine = v2.Compose([
+            transforms.RandAugment(num_ops=2, magnitude=9),
+            transforms.Resize((resize, resize)),
+            v2.RandomHorizontalFlip(p=0.5),
+            transforms.Lambda(lambda x: x.convert('RGB')),  # Convert to three channels
+            transforms.ToTensor(),  # Transform to tensor for torch
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standardize
+        ])
+
+    train_transform_routine_rxrx1 = v2.Compose([
         transforms.Lambda(lambda x: x.convert('RGB')),  # Convert to three channels
+        transforms.RandomChoice([
+            transforms.Lambda(lambda x: F.rotate(x, 0)),
+            transforms.Lambda(lambda x: F.rotate(x, 90)),
+            transforms.Lambda(lambda x: F.rotate(x, 180)),
+            transforms.Lambda(lambda x: F.rotate(x, 270))
+        ]),  # Rotate the image randomly by 0, 90, 180, or 270 degrees
+        transforms.RandomHorizontalFlip(p=0.5),  # Randomly flip the image horizontally
         transforms.ToTensor(),  # Transform to tensor for torch
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standardize
     ])
-
+    
     test_transform_routine = transforms.Compose([
         transforms.Resize((resize, resize)),  # Resize images to 224x224 for resnets
         transforms.Lambda(lambda x: x.convert('RGB')),  # Convert to three channels
         transforms.ToTensor(),  # Transform to tensor for torch
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standardize
+    ])
+    test_transform_routine_rxrx1 = transforms.Compose([
+        #transforms.Resize((resize, resize)),  # Resize images to 224x224 for resnets
+        transforms.Lambda(lambda x: x.convert('RGB')),  # Convert to three channels
+        transforms.ToTensor(),  # Transform to tensor for torch
+        transforms.Lambda(lambda x: standardize(x))  # Custom standardization
     ])
     if(ds=="DTD"):
         train = DTD(root=root,split="train",transform=train_transform_routine,download=True)
@@ -104,7 +137,7 @@ def get_dataloader(ds,root,bs,nworkers,resize=448):
         test = Subset(dataset, test_idx)
     elif(ds=="rxrx1"):
         dataset = get_dataset(dataset="rxrx1", root_dir=root, download=True)
-        train_data = dataset.get_subset("train", transform=train_transform_routine)
+        train_data = dataset.get_subset("train", transform=train_transform_routine_rxrx1)
         train_loader = get_train_loader("standard", train_data, batch_size=bs, num_workers=nworkers)
         id_val_data = dataset.get_subset("val", transform=test_transform_routine)
         id_val_loader = get_eval_loader("standard", id_val_data, batch_size=bs, num_workers=nworkers)
