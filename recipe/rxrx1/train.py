@@ -10,7 +10,7 @@ import argparse
 use_Best = False
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from dataloader.dataloaders import get_dataloader, get_numclass, load_iwildcam
+from dataloader.dataloaders import get_dataloader, get_numclass
 
 
 def parse_arguments():

@@ -58,12 +58,6 @@ def get_dataloader(ds, root, bs, nworkers, resize=448, no_regularizer=False, no_
         transforms.ToTensor(),  # Transform to tensor for torch
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Standardize
     ])
-    test_transform_routine_rxrx1 = transforms.Compose([
-        #transforms.Resize((resize, resize)),  # Resize images to 224x224 for resnets
-        transforms.Lambda(lambda x: x.convert('RGB')),  # Convert to three channels
-        transforms.ToTensor(),  # Transform to tensor for torch
-        transforms.Lambda(lambda x: standardize(x))  # Custom standardization
-    ])
     if(ds=="DTD"):
         train = DTD(root=root,split="train",transform=train_transform_routine,download=True)
         val = DTD(root=root,split="val",transform=test_transform_routine,download=True)

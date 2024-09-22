@@ -52,8 +52,6 @@ if __name__ == '__main__':
     )
     
     model = utils.get_model(config['model_name'])
-    if config['num_epochs_linear'] > 0:
-        model = utils.freeze_model(model)
     model = utils.swap_head(model, config['model_name'], num_classes)
     pred_path_lp = f"iwc/{config['dataset']}_ind_{config['model_name']}lp{suffix}.csv"
     pred_path_ft = f"iwc/{config['dataset']}_ind_{config['model_name']}ft{suffix}.csv"
@@ -74,13 +72,6 @@ if __name__ == '__main__':
     max_f1 = 0
 
     for epoch in range(config['num_epochs']):
-        if config['num_epochs_linear'] > 0 and epoch == config['num_epochs_linear']:
-            torch.save(model.state_dict(), lp_model_path)
-            print(f"linear probed model saved to {lp_model_path}")
-            # utils.make_predictions(pred_path_lp, target_path, pred_path_lp_ood, target_path_ood, model, num_classes, id_test_dataloader, ood_test_dataloader, device)
-            for param in model.parameters():
-                param.requires_grad = True
-            optimizer, scheduler = utils.init_optimizer_scheduler(model, config, config['num_epochs'] - epoch)
         total = 0
         correct = 0
         for batch_idx, labeled_batch in enumerate(train_dataloader):

@@ -1,7 +1,7 @@
 dataset_root: $SLURM_TMPDIR/data
 model_root: "./Models"
 dataset: "rxrx1"
-num_epochs: 100
+num_epochs: 130
 batch_size: 75
 workers: 6
 learning_rate: 0.001

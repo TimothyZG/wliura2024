@@ -4,10 +4,10 @@
 #SBATCH --gres=gpu:4
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
-#SBATCH --time=14:00:00
+#SBATCH --time=20:00:00
 #SBATCH --mail-user=<tiange.zhou@outlook.com>
 #SBATCH --mail-type=ALL
-#SBATCH --output=recipe/train-iwc/output/slurm-%j.out
+#SBATCH --output=recipe/train-iwc/output/tune-%j.out
 module load python/3.10
 module load scipy-stack/2023b
 source ~/mlenv/bin/activate

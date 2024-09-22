@@ -1,11 +1,11 @@
 dataset_root: $SLURM_TMPDIR/data
 model_root: "./Models"
 dataset: "rxrx1"
-num_epochs: 100
+num_epochs: 130
 batch_size: 75
 workers: 6
-learning_rate: 0.001
-weight_decay: 0.00001
+learning_rate: 0.0001
+weight_decay: 0.00005
 model_name: "Resnet34"
 num_epochs_linear: 0
 resize: 256

@@ -36,6 +36,10 @@ ls $DATA_DIR  # This should now list the contents directly
 # python recipe/train-iwc/iwcam.py --suffix 4 --config-path "recipe/train-iwc/config-train-101.yaml" --data-path "$DATA_DIR"
 # python recipe/train-iwc/iwcam.py --suffix 5 --config-path "recipe/train-iwc/config-train-101.yaml" --data-path "$DATA_DIR"
 
+# python recipe/train-iwc/iwcam.py --suffix 1 --config-path "recipe/train-iwc/config-train-152.yaml" --data-path "$DATA_DIR"
+python recipe/train-iwc/iwcam.py --suffix 2 --config-path "recipe/train-iwc/config-train-152.yaml" --data-path "$DATA_DIR"
+
+
 # python recipe/train-iwc/iwcam.py --suffix 3 --config-path "recipe/train-iwc/config-train-152.yaml" --data-path "$DATA_DIR"
 # python recipe/train-iwc/iwcam.py --suffix 4 --config-path "recipe/train-iwc/config-train-152.yaml" --data-path "$DATA_DIR"
 # python recipe/train-iwc/iwcam.py --suffix 5 --config-path "recipe/train-iwc/config-train-152.yaml" --data-path "$DATA_DIR"

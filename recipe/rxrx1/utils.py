@@ -96,14 +96,6 @@ def swap_head(model,model_name,num_classes):
         raise Exception(f"Unrecgonized Model Architecture given: {model_name}")
     return model
 
-def get_lrs(lr_scheduler, optimizer, T_max):
-    if(lr_scheduler=="cosine"):
-        return CosineAnnealingLR(optimizer, T_max=T_max)
-    elif(lr_scheduler=="step"):
-        return StepLR(optimizer, int(T_max/2),0.5)
-    elif(lr_scheduler=="NONE"):
-        return StepLR(optimizer, T_max,1)
-
 def evaluate(model, dataloader, loss_function, device):
     model.eval()
     total_correct = 0
@@ -153,7 +145,6 @@ def load_config(config_path):
         sys.exit(1)
     with open(config_path, 'r') as file:
         config = yaml.safe_load(file)
-    # Replace placeholders with actual environment variables
     for key, value in config.items():
         if isinstance(value, str):
             config[key] = os.path.expandvars(value)
@@ -170,6 +161,5 @@ def init_optimizer_scheduler(model, config, lp=False):
     print("Using Adam and Cosine with Warm Start")
     warmup_scheduler = lr_scheduler.LinearLR(optimizer, start_factor=0.01, total_iters=10)
     cosine_scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=config["num_epochs"])
-    # Combine them sequentially
     scheduler = lr_scheduler.SequentialLR(optimizer, schedulers=[warmup_scheduler, cosine_scheduler], milestones=[10])
     return optimizer, scheduler
